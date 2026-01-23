@@ -1,0 +1,37 @@
+services:
+  api:
+    build: .
+    ports:
+      - '3001:3000'
+    depends_on:
+      - db
+    environment:
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_USERNAME: postgres
+      DB_PASSWORD: admin
+      DB_DATABASE: auto-express-hub
+      JWT_SECRET: yourSecretKey
+      JWT_EXPIRES_IN: 3600s
+    # The following command is for development, it will watch for changes and restart the server.
+    # For production, remove the command and the volumes to run the built code from the container.
+    command: >
+      sh -c "bun run start:dev"
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+
+
+  db:
+    image: postgres:14-alpine
+    ports:
+      - '5432:5432'
+    environment:
+      POSTGRES_DB: auto-express-hub
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: admin
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:

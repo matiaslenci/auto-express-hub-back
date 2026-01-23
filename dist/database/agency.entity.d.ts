@@ -1,0 +1,22 @@
+import { Vehicle } from './vehicle.entity';
+export declare enum Plan {
+    BASICO = "basico",
+    PROFESIONAL = "profesional",
+    PREMIUM = "premium"
+}
+export declare class Agency {
+    id: string;
+    username: string;
+    email: string;
+    password?: string;
+    nombre: string;
+    logo: string;
+    portada: string;
+    ubicacion: string;
+    whatsapp: string;
+    plan: Plan;
+    limitePublicaciones: number;
+    createdAt: Date;
+    updatedAt: Date;
+    vehicles: Vehicle[];
+}
