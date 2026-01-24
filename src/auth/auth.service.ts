@@ -20,12 +20,12 @@ export class AuthService {
     private readonly agencyRepository: Repository<Agency>,
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
-  ) {}
+  ) { }
 
   async register(
     createAgencyDto: CreateAgencyDto,
   ): Promise<{ message: string }> {
-    const { username, email, password, nombre, whatsapp, plan } =
+    const { username, email, password, nombre, plan } =
       createAgencyDto;
 
     const existingAgency = await this.agencyRepository.findOne({
@@ -33,7 +33,7 @@ export class AuthService {
     });
 
     if (existingAgency) {
-      throw new ConflictException('Username or email already exists');
+      throw new ConflictException('El nombre de usuario o correo electrónico ya existe');
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -43,12 +43,11 @@ export class AuthService {
       email,
       password: hashedPassword,
       nombre,
-      whatsapp,
       plan,
     });
 
     await this.agencyRepository.save(agency);
-    return { message: 'Agency registered successfully' };
+    return { message: 'Agencia registrada exitosamente' };
   }
 
   async login(loginDto: LoginDto): Promise<{ accessToken: string }> {
@@ -59,13 +58,13 @@ export class AuthService {
     });
 
     if (!agency || !agency.password) {
-      throw new UnauthorizedException('Invalid credentials');
+      throw new UnauthorizedException('Credenciales inválidas');
     }
 
     const isPasswordMatching = await bcrypt.compare(password, agency.password);
 
     if (!isPasswordMatching) {
-      throw new UnauthorizedException('Invalid credentials');
+      throw new UnauthorizedException('Credenciales inválidas');
     }
 
     const payload = { id: agency.id };

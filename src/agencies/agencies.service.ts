@@ -9,13 +9,13 @@ export class AgenciesService {
   constructor(
     @InjectRepository(Agency)
     private readonly agencyRepository: Repository<Agency>,
-  ) {}
+  ) { }
 
   async getAgencyByUsername(username: string): Promise<Omit<Agency, 'password'>> {
     const agency = await this.agencyRepository.findOne({ where: { username } });
 
     if (!agency) {
-      throw new NotFoundException(`Agency with username ${username} not found`);
+      throw new NotFoundException(`Agencia con nombre de usuario ${username} no encontrada`);
     }
 
     const { password, ...result } = agency;
@@ -32,7 +32,7 @@ export class AgenciesService {
     });
 
     if (!agency) {
-      throw new NotFoundException(`Agency with ID ${id} not found`);
+      throw new NotFoundException(`Agencia con ID ${id} no encontrada`);
     }
 
     await this.agencyRepository.save(agency);

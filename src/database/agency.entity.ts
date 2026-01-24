@@ -81,9 +81,10 @@ export class Agency {
   @ApiProperty({
     description: 'The WhatsApp number for the agency.',
     example: '+1234567890',
+    nullable: true,
   })
-  @Column({ type: 'varchar' })
-  whatsapp: string;
+  @Column({ type: 'varchar', nullable: true })
+  whatsapp?: string;
 
   @ApiProperty({
     description: 'The subscription plan of the agency.',

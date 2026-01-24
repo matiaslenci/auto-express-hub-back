@@ -15,7 +15,7 @@ export class VehiclesService {
   constructor(
     @InjectRepository(Vehicle)
     private readonly vehicleRepository: Repository<Vehicle>,
-  ) {}
+  ) { }
 
   async createVehicle(
     createVehicleDto: CreateVehicleDto,
@@ -38,7 +38,7 @@ export class VehiclesService {
   async getVehicleById(id: string): Promise<Vehicle> {
     const vehicle = await this.vehicleRepository.findOne({ where: { id } });
     if (!vehicle) {
-      throw new NotFoundException(`Vehicle with ID ${id} not found`);
+      throw new NotFoundException(`Vehículo con ID ${id} no encontrado`);
     }
     return vehicle;
   }
@@ -50,14 +50,14 @@ export class VehiclesService {
   ): Promise<Vehicle> {
     const vehicle = await this.getVehicleById(id);
     if (vehicle.agencyId !== user.id) {
-      throw new UnauthorizedException('You can only edit your own vehicles');
+      throw new UnauthorizedException('Solo puedes editar tus propios vehículos');
     }
     const updatedVehicle = await this.vehicleRepository.preload({
       id,
       ...updateVehicleDto,
     });
     if (!updatedVehicle) {
-      throw new NotFoundException(`Vehicle with ID ${id} not found`);
+      throw new NotFoundException(`Vehículo con ID ${id} no encontrado`);
     }
     return this.vehicleRepository.save(updatedVehicle);
   }
@@ -65,10 +65,10 @@ export class VehiclesService {
   async deleteVehicle(id: string, user: Agency): Promise<{ message: string }> {
     const vehicle = await this.getVehicleById(id);
     if (vehicle.agencyId !== user.id) {
-      throw new UnauthorizedException('You can only delete your own vehicles');
+      throw new UnauthorizedException('Solo puedes eliminar tus propios vehículos');
     }
     await this.vehicleRepository.delete(id);
-    return { message: 'Vehicle deleted successfully' };
+    return { message: 'Vehículo eliminado exitosamente' };
   }
 
   async incrementView(id: string): Promise<Vehicle> {

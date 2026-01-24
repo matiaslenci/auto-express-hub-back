@@ -107,8 +107,9 @@ __decorate([
     (0, swagger_1.ApiProperty)({
         description: 'The WhatsApp number for the agency.',
         example: '+1234567890',
+        nullable: true,
     }),
-    (0, typeorm_1.Column)({ type: 'varchar' }),
+    (0, typeorm_1.Column)({ type: 'varchar', nullable: true }),
     __metadata("design:type", String)
 ], Agency.prototype, "whatsapp", void 0);
 __decorate([

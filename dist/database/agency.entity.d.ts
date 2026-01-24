@@ -13,7 +13,7 @@ export declare class Agency {
     logo: string;
     portada: string;
     ubicacion: string;
-    whatsapp: string;
+    whatsapp?: string;
     plan: Plan;
     limitePublicaciones: number;
     createdAt: Date;

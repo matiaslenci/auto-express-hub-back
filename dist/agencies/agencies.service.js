@@ -25,7 +25,7 @@ let AgenciesService = class AgenciesService {
     async getAgencyByUsername(username) {
         const agency = await this.agencyRepository.findOne({ where: { username } });
         if (!agency) {
-            throw new common_1.NotFoundException(`Agency with username ${username} not found`);
+            throw new common_1.NotFoundException(`Agencia con nombre de usuario ${username} no encontrada`);
         }
         const { password, ...result } = agency;
         return result;
@@ -36,7 +36,7 @@ let AgenciesService = class AgenciesService {
             ...updateAgencyDto,
         });
         if (!agency) {
-            throw new common_1.NotFoundException(`Agency with ID ${id} not found`);
+            throw new common_1.NotFoundException(`Agencia con ID ${id} no encontrada`);
         }
         await this.agencyRepository.save(agency);
         const { password, ...result } = agency;

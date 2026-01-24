@@ -63,12 +63,12 @@ let AuthService = class AuthService {
         this.configService = configService;
     }
     async register(createAgencyDto) {
-        const { username, email, password, nombre, whatsapp, plan } = createAgencyDto;
+        const { username, email, password, nombre, plan } = createAgencyDto;
         const existingAgency = await this.agencyRepository.findOne({
             where: [{ username }, { email }],
         });
         if (existingAgency) {
-            throw new common_1.ConflictException('Username or email already exists');
+            throw new common_1.ConflictException('El nombre de usuario o correo electrónico ya existe');
         }
         const hashedPassword = await bcrypt.hash(password, 10);
         const agency = this.agencyRepository.create({
@@ -76,11 +76,10 @@ let AuthService = class AuthService {
             email,
             password: hashedPassword,
             nombre,
-            whatsapp,
             plan,
         });
         await this.agencyRepository.save(agency);
-        return { message: 'Agency registered successfully' };
+        return { message: 'Agencia registrada exitosamente' };
     }
     async login(loginDto) {
         const { email, password } = loginDto;
@@ -89,11 +88,11 @@ let AuthService = class AuthService {
             select: ['id', 'password'],
         });
         if (!agency || !agency.password) {
-            throw new common_1.UnauthorizedException('Invalid credentials');
+            throw new common_1.UnauthorizedException('Credenciales inválidas');
         }
         const isPasswordMatching = await bcrypt.compare(password, agency.password);
         if (!isPasswordMatching) {
-            throw new common_1.UnauthorizedException('Invalid credentials');
+            throw new common_1.UnauthorizedException('Credenciales inválidas');
         }
         const payload = { id: agency.id };
         const accessToken = this.jwtService.sign(payload);

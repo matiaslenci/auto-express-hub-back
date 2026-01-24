@@ -38,31 +38,31 @@ let VehiclesService = class VehiclesService {
     async getVehicleById(id) {
         const vehicle = await this.vehicleRepository.findOne({ where: { id } });
         if (!vehicle) {
-            throw new common_1.NotFoundException(`Vehicle with ID ${id} not found`);
+            throw new common_1.NotFoundException(`Vehículo con ID ${id} no encontrado`);
         }
         return vehicle;
     }
     async updateVehicle(id, updateVehicleDto, user) {
         const vehicle = await this.getVehicleById(id);
         if (vehicle.agencyId !== user.id) {
-            throw new common_1.UnauthorizedException('You can only edit your own vehicles');
+            throw new common_1.UnauthorizedException('Solo puedes editar tus propios vehículos');
         }
         const updatedVehicle = await this.vehicleRepository.preload({
             id,
             ...updateVehicleDto,
         });
         if (!updatedVehicle) {
-            throw new common_1.NotFoundException(`Vehicle with ID ${id} not found`);
+            throw new common_1.NotFoundException(`Vehículo con ID ${id} no encontrado`);
         }
         return this.vehicleRepository.save(updatedVehicle);
     }
     async deleteVehicle(id, user) {
         const vehicle = await this.getVehicleById(id);
         if (vehicle.agencyId !== user.id) {
-            throw new common_1.UnauthorizedException('You can only delete your own vehicles');
+            throw new common_1.UnauthorizedException('Solo puedes eliminar tus propios vehículos');
         }
         await this.vehicleRepository.delete(id);
-        return { message: 'Vehicle deleted successfully' };
+        return { message: 'Vehículo eliminado exitosamente' };
     }
     async incrementView(id) {
         const vehicle = await this.getVehicleById(id);

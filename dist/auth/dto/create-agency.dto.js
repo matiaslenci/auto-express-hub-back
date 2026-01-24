@@ -14,20 +14,35 @@ const class_validator_1 = require("class-validator");
 const swagger_1 = require("@nestjs/swagger");
 const agency_entity_1 = require("../../database/agency.entity");
 class CreateAgencyDto {
+    plan;
+    nombre;
     username;
     email;
     password;
-    nombre;
-    logo;
-    portada;
-    ubicacion;
-    whatsapp;
-    plan;
 }
 exports.CreateAgencyDto = CreateAgencyDto;
 __decorate([
     (0, swagger_1.ApiProperty)({
-        description: 'The username of the agency.',
+        description: 'The subscription plan of the agency.',
+        enum: agency_entity_1.Plan,
+        example: agency_entity_1.Plan.BASICO,
+    }),
+    (0, class_validator_1.IsEnum)(agency_entity_1.Plan),
+    (0, class_validator_1.IsNotEmpty)(),
+    __metadata("design:type", String)
+], CreateAgencyDto.prototype, "plan", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({
+        description: 'The display name of the agency.',
+        example: 'Autos Deluxe',
+    }),
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsNotEmpty)(),
+    __metadata("design:type", String)
+], CreateAgencyDto.prototype, "nombre", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({
+        description: 'The username of the agency (URL).',
         example: 'autos_deluxe',
     }),
     (0, class_validator_1.IsString)(),
@@ -53,63 +68,4 @@ __decorate([
     (0, class_validator_1.MinLength)(8),
     __metadata("design:type", String)
 ], CreateAgencyDto.prototype, "password", void 0);
-__decorate([
-    (0, swagger_1.ApiProperty)({
-        description: 'The display name of the agency.',
-        example: 'Autos Deluxe',
-    }),
-    (0, class_validator_1.IsString)(),
-    (0, class_validator_1.IsNotEmpty)(),
-    __metadata("design:type", String)
-], CreateAgencyDto.prototype, "nombre", void 0);
-__decorate([
-    (0, swagger_1.ApiProperty)({
-        description: 'URL of the agency’s logo.',
-        example: 'https://example.com/logo.png',
-        required: false,
-    }),
-    (0, class_validator_1.IsString)(),
-    (0, class_validator_1.IsOptional)(),
-    __metadata("design:type", String)
-], CreateAgencyDto.prototype, "logo", void 0);
-__decorate([
-    (0, swagger_1.ApiProperty)({
-        description: 'URL of the agency’s cover image.',
-        example: 'https://example.com/cover.png',
-        required: false,
-    }),
-    (0, class_validator_1.IsString)(),
-    (0, class_validator_1.IsOptional)(),
-    __metadata("design:type", String)
-], CreateAgencyDto.prototype, "portada", void 0);
-__decorate([
-    (0, swagger_1.ApiProperty)({
-        description: 'The location of the agency.',
-        example: '123 Main St, Anytown',
-        required: false,
-    }),
-    (0, class_validator_1.IsString)(),
-    (0, class_validator_1.IsOptional)(),
-    __metadata("design:type", String)
-], CreateAgencyDto.prototype, "ubicacion", void 0);
-__decorate([
-    (0, swagger_1.ApiProperty)({
-        description: 'The WhatsApp number for the agency.',
-        example: '+1234567890',
-    }),
-    (0, class_validator_1.IsString)(),
-    (0, class_validator_1.IsNotEmpty)(),
-    __metadata("design:type", String)
-], CreateAgencyDto.prototype, "whatsapp", void 0);
-__decorate([
-    (0, swagger_1.ApiProperty)({
-        description: 'The subscription plan of the agency.',
-        enum: agency_entity_1.Plan,
-        default: agency_entity_1.Plan.BASICO,
-        required: false,
-    }),
-    (0, class_validator_1.IsEnum)(agency_entity_1.Plan),
-    (0, class_validator_1.IsOptional)(),
-    __metadata("design:type", String)
-], CreateAgencyDto.prototype, "plan", void 0);
 //# sourceMappingURL=create-agency.dto.js.map
