@@ -78,8 +78,14 @@ let AuthService = class AuthService {
             nombre,
             plan,
         });
-        await this.agencyRepository.save(agency);
-        return { message: 'Agencia registrada exitosamente' };
+        const savedAgency = await this.agencyRepository.save(agency);
+        const payload = { id: savedAgency.id, username: savedAgency.username };
+        const access_token = this.jwtService.sign(payload);
+        const { password: _, ...agencyData } = savedAgency;
+        return {
+            access_token,
+            agency: agencyData,
+        };
     }
     async login(loginDto) {
         const { email, password } = loginDto;
@@ -94,9 +100,19 @@ let AuthService = class AuthService {
         if (!isPasswordMatching) {
             throw new common_1.UnauthorizedException('Credenciales inválidas');
         }
-        const payload = { id: agency.id };
-        const accessToken = this.jwtService.sign(payload);
-        return { accessToken };
+        const fullAgency = await this.agencyRepository.findOne({
+            where: { id: agency.id },
+        });
+        if (!fullAgency) {
+            throw new common_1.UnauthorizedException('Usuario no encontrado');
+        }
+        const payload = { id: fullAgency.id, username: fullAgency.username };
+        const access_token = this.jwtService.sign(payload);
+        const { password: _, ...agencyData } = fullAgency;
+        return {
+            access_token,
+            agency: agencyData,
+        };
     }
 };
 exports.AuthService = AuthService;

@@ -37,7 +37,20 @@ __decorate([
     (0, swagger_1.ApiOperation)({ summary: 'Register a new agency' }),
     (0, swagger_1.ApiResponse)({
         status: 201,
-        description: 'The agency has been successfully created.',
+        description: 'The agency has been successfully created and returns JWT token with agency data.',
+        schema: {
+            type: 'object',
+            properties: {
+                access_token: {
+                    type: 'string',
+                    description: 'JWT access token',
+                },
+                agency: {
+                    type: 'object',
+                    description: 'Agency data (excluding password)',
+                },
+            },
+        },
     }),
     (0, swagger_1.ApiResponse)({ status: 409, description: 'Username or email already exists.' }),
     __param(0, (0, common_1.Body)()),
@@ -51,12 +64,17 @@ __decorate([
     (0, swagger_1.ApiOperation)({ summary: 'Log in as an agency' }),
     (0, swagger_1.ApiResponse)({
         status: 200,
-        description: 'Returns a JWT access token.',
+        description: 'Returns a JWT access token and agency data.',
         schema: {
             type: 'object',
             properties: {
-                accessToken: {
+                access_token: {
                     type: 'string',
+                    description: 'JWT access token',
+                },
+                agency: {
+                    type: 'object',
+                    description: 'Agency data (excluding password)',
                 },
             },
         },

@@ -24,7 +24,7 @@ export class AuthService {
 
   async register(
     createAgencyDto: CreateAgencyDto,
-  ): Promise<{ message: string }> {
+  ): Promise<{ access_token: string; agency: Omit<Agency, 'password'> }> {
     const { username, email, password, nombre, plan } =
       createAgencyDto;
 
@@ -46,11 +46,22 @@ export class AuthService {
       plan,
     });
 
-    await this.agencyRepository.save(agency);
-    return { message: 'Agencia registrada exitosamente' };
+    const savedAgency = await this.agencyRepository.save(agency);
+
+    // Generar token JWT
+    const payload = { id: savedAgency.id, username: savedAgency.username };
+    const access_token = this.jwtService.sign(payload);
+
+    // Excluir password antes de devolver
+    const { password: _, ...agencyData } = savedAgency;
+
+    return {
+      access_token,
+      agency: agencyData,
+    };
   }
 
-  async login(loginDto: LoginDto): Promise<{ accessToken: string }> {
+  async login(loginDto: LoginDto): Promise<{ access_token: string; agency: Omit<Agency, 'password'> }> {
     const { email, password } = loginDto;
     const agency = await this.agencyRepository.findOne({
       where: { email },
@@ -67,10 +78,25 @@ export class AuthService {
       throw new UnauthorizedException('Credenciales inválidas');
     }
 
-    const payload = { id: agency.id };
-    const accessToken = this.jwtService.sign(payload);
+    // Cargar todos los datos de la agencia (sin password)
+    const fullAgency = await this.agencyRepository.findOne({
+      where: { id: agency.id },
+    });
 
-    return { accessToken };
+    if (!fullAgency) {
+      throw new UnauthorizedException('Usuario no encontrado');
+    }
+
+    const payload = { id: fullAgency.id, username: fullAgency.username };
+    const access_token = this.jwtService.sign(payload);
+
+    // Excluir password antes de devolver
+    const { password: _, ...agencyData } = fullAgency;
+
+    return {
+      access_token,
+      agency: agencyData,
+    };
   }
 }
 
