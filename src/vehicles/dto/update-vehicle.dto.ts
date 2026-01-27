@@ -6,7 +6,9 @@ import {
   IsBoolean,
   IsArray,
   IsOptional,
+  IsEnum,
 } from 'class-validator';
+import { TipoMoneda } from '../../database/vehicle.entity';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class UpdateVehicleDto {
@@ -45,6 +47,16 @@ export class UpdateVehicleDto {
   @IsNumber()
   @IsOptional()
   precio?: number;
+
+  @ApiProperty({
+    description: 'Currency type: ARS (pesos argentinos), USD (dólares), or CONSULTAR (price on request).',
+    enum: TipoMoneda,
+    example: TipoMoneda.USD,
+    required: false,
+  })
+  @IsEnum(TipoMoneda)
+  @IsOptional()
+  moneda?: TipoMoneda;
 
   @ApiProperty({
     description: 'The type of the vehicle.',

@@ -11,12 +11,14 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CreateVehicleDto = void 0;
 const class_validator_1 = require("class-validator");
+const vehicle_entity_1 = require("../../database/vehicle.entity");
 const swagger_1 = require("@nestjs/swagger");
 class CreateVehicleDto {
     marca;
     modelo;
     anio;
     precio;
+    moneda;
     tipo;
     transmision;
     combustible;
@@ -50,13 +52,24 @@ __decorate([
 ], CreateVehicleDto.prototype, "anio", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)({
-        description: 'The price of the vehicle.',
+        description: 'The price of the vehicle. Optional when moneda is CONSULTAR.',
         example: 25000.0,
+        required: false,
     }),
     (0, class_validator_1.IsNumber)(),
-    (0, class_validator_1.IsNotEmpty)(),
+    (0, class_validator_1.IsOptional)(),
     __metadata("design:type", Number)
 ], CreateVehicleDto.prototype, "precio", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({
+        description: 'Currency type: ARS (pesos argentinos), USD (dólares), or CONSULTAR (price on request).',
+        enum: vehicle_entity_1.TipoMoneda,
+        example: vehicle_entity_1.TipoMoneda.USD,
+    }),
+    (0, class_validator_1.IsEnum)(vehicle_entity_1.TipoMoneda),
+    (0, class_validator_1.IsNotEmpty)(),
+    __metadata("design:type", String)
+], CreateVehicleDto.prototype, "moneda", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)({ description: 'The type of the vehicle.', example: 'Sedán' }),
     (0, class_validator_1.IsString)(),

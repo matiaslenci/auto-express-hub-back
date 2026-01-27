@@ -10,6 +10,12 @@ import {
 import { Agency } from './agency.entity';
 import { ApiProperty } from '@nestjs/swagger';
 
+export enum TipoMoneda {
+  ARS = 'ARS',
+  USD = 'USD',
+  CONSULTAR = 'CONSULTAR',
+}
+
 @Entity('vehicles')
 export class Vehicle {
   @ApiProperty({
@@ -38,9 +44,18 @@ export class Vehicle {
     description: 'The price of the vehicle.',
     example: 25000.0,
     type: 'number',
+    nullable: true,
   })
-  @Column({ type: 'decimal', precision: 10, scale: 2 })
-  precio: number;
+  @Column({ type: 'decimal', precision: 10, scale: 2, nullable: true })
+  precio: number | null;
+
+  @ApiProperty({
+    description: 'Currency type of the price: ARS (pesos argentinos), USD (dólares), or CONSULTAR (price on request).',
+    enum: TipoMoneda,
+    example: TipoMoneda.USD,
+  })
+  @Column({ type: 'enum', enum: TipoMoneda, default: TipoMoneda.ARS })
+  moneda: TipoMoneda;
 
   @ApiProperty({ description: 'The type of the vehicle.', example: 'Sedán' })
   @Column({ type: 'varchar' })
