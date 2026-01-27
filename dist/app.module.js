@@ -16,6 +16,7 @@ const database_module_1 = require("./database/database.module");
 const auth_module_1 = require("./auth/auth.module");
 const agencies_module_1 = require("./agencies/agencies.module");
 const vehicles_module_1 = require("./vehicles/vehicles.module");
+const uploads_module_1 = require("./uploads/uploads.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -43,6 +44,7 @@ exports.AppModule = AppModule = __decorate([
             auth_module_1.AuthModule,
             agencies_module_1.AgenciesModule,
             vehicles_module_1.VehiclesModule,
+            uploads_module_1.UploadsModule,
         ],
         controllers: [],
         providers: [],

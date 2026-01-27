@@ -7,6 +7,7 @@ import { DatabaseModule } from './database/database.module';
 import { AuthModule } from './auth/auth.module';
 import { AgenciesModule } from './agencies/agencies.module';
 import { VehiclesModule } from './vehicles/vehicles.module';
+import { UploadsModule } from './uploads/uploads.module';
 
 @Module({
   imports: [
@@ -31,8 +32,9 @@ import { VehiclesModule } from './vehicles/vehicles.module';
     AuthModule,
     AgenciesModule,
     VehiclesModule,
+    UploadsModule,
   ],
   controllers: [],
   providers: [],
 })
-export class AppModule {}
+export class AppModule { }
