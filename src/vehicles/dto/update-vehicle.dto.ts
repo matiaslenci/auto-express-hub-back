@@ -17,7 +17,7 @@ export class UpdateVehicleDto {
     example: 'Toyota',
     required: false,
   })
-  @IsString()
+  @IsString({ message: 'La marca debe ser una cadena de texto' })
   @IsOptional()
   marca?: string;
 
@@ -26,7 +26,7 @@ export class UpdateVehicleDto {
     example: 'Corolla',
     required: false,
   })
-  @IsString()
+  @IsString({ message: 'El modelo debe ser una cadena de texto' })
   @IsOptional()
   modelo?: string;
 
@@ -35,7 +35,7 @@ export class UpdateVehicleDto {
     example: 2022,
     required: false,
   })
-  @IsInt()
+  @IsInt({ message: 'El año debe ser un número entero' })
   @IsOptional()
   anio?: number;
 
@@ -44,7 +44,7 @@ export class UpdateVehicleDto {
     example: 25000.0,
     required: false,
   })
-  @IsNumber()
+  @IsNumber({}, { message: 'El precio debe ser un número' })
   @IsOptional()
   precio?: number;
 
@@ -54,7 +54,7 @@ export class UpdateVehicleDto {
     example: TipoMoneda.USD,
     required: false,
   })
-  @IsEnum(TipoMoneda)
+  @IsEnum(TipoMoneda, { message: 'La moneda debe ser un valor válido' })
   @IsOptional()
   moneda?: TipoMoneda;
 
@@ -63,7 +63,7 @@ export class UpdateVehicleDto {
     example: 'Sedán',
     required: false,
   })
-  @IsString()
+  @IsString({ message: 'El tipo debe ser una cadena de texto' })
   @IsOptional()
   tipo?: string;
 
@@ -72,7 +72,7 @@ export class UpdateVehicleDto {
     example: 'Automática',
     required: false,
   })
-  @IsString()
+  @IsString({ message: 'La transmisión debe ser una cadena de texto' })
   @IsOptional()
   transmision?: string;
 
@@ -81,7 +81,7 @@ export class UpdateVehicleDto {
     example: 'Gasolina',
     required: false,
   })
-  @IsString()
+  @IsString({ message: 'El combustible debe ser una cadena de texto' })
   @IsOptional()
   combustible?: string;
 
@@ -90,7 +90,7 @@ export class UpdateVehicleDto {
     example: 15000,
     required: false,
   })
-  @IsInt()
+  @IsInt({ message: 'El kilometraje debe ser un número entero' })
   @IsOptional()
   kilometraje?: number;
 
@@ -99,7 +99,7 @@ export class UpdateVehicleDto {
     example: 'Rojo',
     required: false,
   })
-  @IsString()
+  @IsString({ message: 'El color debe ser una cadena de texto' })
   @IsOptional()
   color?: string;
 
@@ -108,7 +108,7 @@ export class UpdateVehicleDto {
     example: 'En excelente estado, único dueño.',
     required: false,
   })
-  @IsString()
+  @IsString({ message: 'La descripción debe ser una cadena de texto' })
   @IsOptional()
   descripcion?: string;
 
@@ -117,7 +117,7 @@ export class UpdateVehicleDto {
     example: 'Santa Fe',
     required: false,
   })
-  @IsString()
+  @IsString({ message: 'La localidad debe ser una cadena de texto' })
   @IsOptional()
   localidad?: string;
 
@@ -130,8 +130,8 @@ export class UpdateVehicleDto {
     ],
     required: false,
   })
-  @IsArray()
-  @IsString({ each: true })
+  @IsArray({ message: 'Las fotos deben ser un arreglo' })
+  @IsString({ each: true, message: 'Cada foto debe ser una URL (cadena de texto)' })
   @IsOptional()
   fotos?: string[];
 
@@ -139,7 +139,7 @@ export class UpdateVehicleDto {
     description: 'Indicates if the vehicle is available for sale.',
     required: false,
   })
-  @IsBoolean()
+  @IsBoolean({ message: 'Activo debe ser un valor booleano' })
   @IsOptional()
   activo?: boolean;
 }

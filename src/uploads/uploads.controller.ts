@@ -170,7 +170,7 @@ export class UploadsController {
         // Validate folder parameter
         if (folder !== 'vehicles' && folder !== 'agencies') {
             throw new BadRequestException(
-                'Invalid folder. Must be "vehicles" or "agencies".',
+                'Carpeta no válida. Debe ser "vehicles" o "agencies".',
             );
         }
         await this.uploadsService.deleteImage(folder as UploadFolder, filename);

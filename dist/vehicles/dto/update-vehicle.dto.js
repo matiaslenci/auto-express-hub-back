@@ -36,7 +36,7 @@ __decorate([
         example: 'Toyota',
         required: false,
     }),
-    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsString)({ message: 'La marca debe ser una cadena de texto' }),
     (0, class_validator_1.IsOptional)(),
     __metadata("design:type", String)
 ], UpdateVehicleDto.prototype, "marca", void 0);
@@ -46,7 +46,7 @@ __decorate([
         example: 'Corolla',
         required: false,
     }),
-    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsString)({ message: 'El modelo debe ser una cadena de texto' }),
     (0, class_validator_1.IsOptional)(),
     __metadata("design:type", String)
 ], UpdateVehicleDto.prototype, "modelo", void 0);
@@ -56,7 +56,7 @@ __decorate([
         example: 2022,
         required: false,
     }),
-    (0, class_validator_1.IsInt)(),
+    (0, class_validator_1.IsInt)({ message: 'El año debe ser un número entero' }),
     (0, class_validator_1.IsOptional)(),
     __metadata("design:type", Number)
 ], UpdateVehicleDto.prototype, "anio", void 0);
@@ -66,7 +66,7 @@ __decorate([
         example: 25000.0,
         required: false,
     }),
-    (0, class_validator_1.IsNumber)(),
+    (0, class_validator_1.IsNumber)({}, { message: 'El precio debe ser un número' }),
     (0, class_validator_1.IsOptional)(),
     __metadata("design:type", Number)
 ], UpdateVehicleDto.prototype, "precio", void 0);
@@ -77,7 +77,7 @@ __decorate([
         example: vehicle_entity_1.TipoMoneda.USD,
         required: false,
     }),
-    (0, class_validator_1.IsEnum)(vehicle_entity_1.TipoMoneda),
+    (0, class_validator_1.IsEnum)(vehicle_entity_1.TipoMoneda, { message: 'La moneda debe ser un valor válido' }),
     (0, class_validator_1.IsOptional)(),
     __metadata("design:type", String)
 ], UpdateVehicleDto.prototype, "moneda", void 0);
@@ -87,7 +87,7 @@ __decorate([
         example: 'Sedán',
         required: false,
     }),
-    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsString)({ message: 'El tipo debe ser una cadena de texto' }),
     (0, class_validator_1.IsOptional)(),
     __metadata("design:type", String)
 ], UpdateVehicleDto.prototype, "tipo", void 0);
@@ -97,7 +97,7 @@ __decorate([
         example: 'Automática',
         required: false,
     }),
-    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsString)({ message: 'La transmisión debe ser una cadena de texto' }),
     (0, class_validator_1.IsOptional)(),
     __metadata("design:type", String)
 ], UpdateVehicleDto.prototype, "transmision", void 0);
@@ -107,7 +107,7 @@ __decorate([
         example: 'Gasolina',
         required: false,
     }),
-    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsString)({ message: 'El combustible debe ser una cadena de texto' }),
     (0, class_validator_1.IsOptional)(),
     __metadata("design:type", String)
 ], UpdateVehicleDto.prototype, "combustible", void 0);
@@ -117,7 +117,7 @@ __decorate([
         example: 15000,
         required: false,
     }),
-    (0, class_validator_1.IsInt)(),
+    (0, class_validator_1.IsInt)({ message: 'El kilometraje debe ser un número entero' }),
     (0, class_validator_1.IsOptional)(),
     __metadata("design:type", Number)
 ], UpdateVehicleDto.prototype, "kilometraje", void 0);
@@ -127,7 +127,7 @@ __decorate([
         example: 'Rojo',
         required: false,
     }),
-    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsString)({ message: 'El color debe ser una cadena de texto' }),
     (0, class_validator_1.IsOptional)(),
     __metadata("design:type", String)
 ], UpdateVehicleDto.prototype, "color", void 0);
@@ -137,7 +137,7 @@ __decorate([
         example: 'En excelente estado, único dueño.',
         required: false,
     }),
-    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsString)({ message: 'La descripción debe ser una cadena de texto' }),
     (0, class_validator_1.IsOptional)(),
     __metadata("design:type", String)
 ], UpdateVehicleDto.prototype, "descripcion", void 0);
@@ -147,7 +147,7 @@ __decorate([
         example: 'Santa Fe',
         required: false,
     }),
-    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsString)({ message: 'La localidad debe ser una cadena de texto' }),
     (0, class_validator_1.IsOptional)(),
     __metadata("design:type", String)
 ], UpdateVehicleDto.prototype, "localidad", void 0);
@@ -161,8 +161,8 @@ __decorate([
         ],
         required: false,
     }),
-    (0, class_validator_1.IsArray)(),
-    (0, class_validator_1.IsString)({ each: true }),
+    (0, class_validator_1.IsArray)({ message: 'Las fotos deben ser un arreglo' }),
+    (0, class_validator_1.IsString)({ each: true, message: 'Cada foto debe ser una URL (cadena de texto)' }),
     (0, class_validator_1.IsOptional)(),
     __metadata("design:type", Array)
 ], UpdateVehicleDto.prototype, "fotos", void 0);
@@ -171,7 +171,7 @@ __decorate([
         description: 'Indicates if the vehicle is available for sale.',
         required: false,
     }),
-    (0, class_validator_1.IsBoolean)(),
+    (0, class_validator_1.IsBoolean)({ message: 'Activo debe ser un valor booleano' }),
     (0, class_validator_1.IsOptional)(),
     __metadata("design:type", Boolean)
 ], UpdateVehicleDto.prototype, "activo", void 0);
