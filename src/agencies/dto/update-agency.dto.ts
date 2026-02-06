@@ -9,7 +9,7 @@ export class UpdateAgencyDto {
     example: 'new_autos_deluxe',
     required: false,
   })
-  @IsString()
+  @IsString({ message: 'El nombre de usuario debe ser una cadena de texto' })
   @IsOptional()
   username?: string;
 
@@ -18,7 +18,7 @@ export class UpdateAgencyDto {
     example: 'newcontact@autosdeluxe.com',
     required: false,
   })
-  @IsEmail()
+  @IsEmail({}, { message: 'El email debe ser un correo válido' })
   @IsOptional()
   email?: string;
 
@@ -27,7 +27,7 @@ export class UpdateAgencyDto {
     example: 'New Autos Deluxe',
     required: false,
   })
-  @IsString()
+  @IsString({ message: 'El nombre debe ser una cadena de texto' })
   @IsOptional()
   nombre?: string;
 
@@ -36,7 +36,7 @@ export class UpdateAgencyDto {
     example: 'https://example.com/newlogo.png',
     required: false,
   })
-  @IsString()
+  @IsString({ message: 'El logo debe ser una URL (cadena de texto)' })
   @IsOptional()
   logo?: string;
 
@@ -45,7 +45,7 @@ export class UpdateAgencyDto {
     example: 'https://example.com/newcover.png',
     required: false,
   })
-  @IsString()
+  @IsString({ message: 'La portada debe ser una URL (cadena de texto)' })
   @IsOptional()
   portada?: string;
 
@@ -54,7 +54,7 @@ export class UpdateAgencyDto {
     example: '456 New Main St, Anytown',
     required: false,
   })
-  @IsString()
+  @IsString({ message: 'La ubicación debe ser una cadena de texto' })
   @IsOptional()
   ubicacion?: string;
 
@@ -63,7 +63,7 @@ export class UpdateAgencyDto {
     example: '+19876543210',
     required: false,
   })
-  @IsString()
+  @IsString({ message: 'El WhatsApp debe ser una cadena de texto' })
   @IsOptional()
   whatsapp?: string;
 
@@ -72,7 +72,7 @@ export class UpdateAgencyDto {
     enum: Plan,
     required: false,
   })
-  @IsEnum(Plan)
+  @IsEnum(Plan, { message: 'El plan debe ser uno de los valores válidos' })
   @IsOptional()
   plan?: Plan;
 }

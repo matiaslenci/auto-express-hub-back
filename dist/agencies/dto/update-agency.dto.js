@@ -30,7 +30,7 @@ __decorate([
         example: 'new_autos_deluxe',
         required: false,
     }),
-    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsString)({ message: 'El nombre de usuario debe ser una cadena de texto' }),
     (0, class_validator_1.IsOptional)(),
     __metadata("design:type", String)
 ], UpdateAgencyDto.prototype, "username", void 0);
@@ -40,7 +40,7 @@ __decorate([
         example: 'newcontact@autosdeluxe.com',
         required: false,
     }),
-    (0, class_validator_1.IsEmail)(),
+    (0, class_validator_1.IsEmail)({}, { message: 'El email debe ser un correo válido' }),
     (0, class_validator_1.IsOptional)(),
     __metadata("design:type", String)
 ], UpdateAgencyDto.prototype, "email", void 0);
@@ -50,7 +50,7 @@ __decorate([
         example: 'New Autos Deluxe',
         required: false,
     }),
-    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsString)({ message: 'El nombre debe ser una cadena de texto' }),
     (0, class_validator_1.IsOptional)(),
     __metadata("design:type", String)
 ], UpdateAgencyDto.prototype, "nombre", void 0);
@@ -60,7 +60,7 @@ __decorate([
         example: 'https://example.com/newlogo.png',
         required: false,
     }),
-    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsString)({ message: 'El logo debe ser una URL (cadena de texto)' }),
     (0, class_validator_1.IsOptional)(),
     __metadata("design:type", String)
 ], UpdateAgencyDto.prototype, "logo", void 0);
@@ -70,7 +70,7 @@ __decorate([
         example: 'https://example.com/newcover.png',
         required: false,
     }),
-    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsString)({ message: 'La portada debe ser una URL (cadena de texto)' }),
     (0, class_validator_1.IsOptional)(),
     __metadata("design:type", String)
 ], UpdateAgencyDto.prototype, "portada", void 0);
@@ -80,7 +80,7 @@ __decorate([
         example: '456 New Main St, Anytown',
         required: false,
     }),
-    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsString)({ message: 'La ubicación debe ser una cadena de texto' }),
     (0, class_validator_1.IsOptional)(),
     __metadata("design:type", String)
 ], UpdateAgencyDto.prototype, "ubicacion", void 0);
@@ -90,7 +90,7 @@ __decorate([
         example: '+19876543210',
         required: false,
     }),
-    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsString)({ message: 'El WhatsApp debe ser una cadena de texto' }),
     (0, class_validator_1.IsOptional)(),
     __metadata("design:type", String)
 ], UpdateAgencyDto.prototype, "whatsapp", void 0);
@@ -100,7 +100,7 @@ __decorate([
         enum: agency_entity_1.Plan,
         required: false,
     }),
-    (0, class_validator_1.IsEnum)(agency_entity_1.Plan),
+    (0, class_validator_1.IsEnum)(agency_entity_1.Plan, { message: 'El plan debe ser uno de los valores válidos' }),
     (0, class_validator_1.IsOptional)(),
     __metadata("design:type", String)
 ], UpdateAgencyDto.prototype, "plan", void 0);
