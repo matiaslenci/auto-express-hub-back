@@ -32,6 +32,7 @@ let Vehicle = class Vehicle {
     kilometraje;
     color;
     descripcion;
+    localidad;
     fotos;
     activo;
     vistas;
@@ -129,6 +130,15 @@ __decorate([
     (0, typeorm_1.Column)({ type: 'text', nullable: true }),
     __metadata("design:type", String)
 ], Vehicle.prototype, "descripcion", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({
+        description: 'La localidad/ciudad donde se encuentra el vehículo.',
+        example: 'Santa Fe',
+        nullable: true,
+    }),
+    (0, typeorm_1.Column)({ type: 'varchar', nullable: true }),
+    __metadata("design:type", String)
+], Vehicle.prototype, "localidad", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)({
         description: 'An array of URLs for the vehicle’s photos.',

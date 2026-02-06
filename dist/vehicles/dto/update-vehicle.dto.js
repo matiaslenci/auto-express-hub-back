@@ -25,6 +25,7 @@ class UpdateVehicleDto {
     kilometraje;
     color;
     descripcion;
+    localidad;
     fotos;
     activo;
 }
@@ -140,6 +141,16 @@ __decorate([
     (0, class_validator_1.IsOptional)(),
     __metadata("design:type", String)
 ], UpdateVehicleDto.prototype, "descripcion", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({
+        description: 'La localidad/ciudad donde se encuentra el vehículo.',
+        example: 'Santa Fe',
+        required: false,
+    }),
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsOptional)(),
+    __metadata("design:type", String)
+], UpdateVehicleDto.prototype, "localidad", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)({
         description: 'An array of URLs for the vehicle’s photos.',

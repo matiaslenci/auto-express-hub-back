@@ -95,6 +95,14 @@ export class Vehicle {
   descripcion: string;
 
   @ApiProperty({
+    description: 'La localidad/ciudad donde se encuentra el vehículo.',
+    example: 'Santa Fe',
+    nullable: true,
+  })
+  @Column({ type: 'varchar', nullable: true })
+  localidad: string;
+
+  @ApiProperty({
     description: 'An array of URLs for the vehicle’s photos.',
     type: [String],
     example: [

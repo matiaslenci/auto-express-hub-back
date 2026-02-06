@@ -24,7 +24,7 @@ import { UploadsModule } from './uploads/uploads.module';
         password: configService.get<string>('DB_PASSWORD'),
         database: configService.get<string>('DB_DATABASE'),
         entities: [Agency, Vehicle],
-        synchronize: true, // Ideal para desarrollo, considerar migraciones para producción
+        synchronize: true, // TODO: Modificar en producción
       }),
       inject: [ConfigService],
     }),

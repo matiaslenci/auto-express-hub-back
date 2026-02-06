@@ -11,6 +11,7 @@ export declare class CreateVehicleDto {
     kilometraje: number;
     color: string;
     descripcion?: string;
+    localidad?: string;
     fotos: string[];
     activo?: boolean;
 }

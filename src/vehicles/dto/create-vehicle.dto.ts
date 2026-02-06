@@ -93,6 +93,15 @@ export class CreateVehicleDto {
   descripcion?: string;
 
   @ApiProperty({
+    description: 'La localidad/ciudad donde se encuentra el vehículo.',
+    example: 'Santa Fe',
+    required: false,
+  })
+  @IsString()
+  @IsOptional()
+  localidad?: string;
+
+  @ApiProperty({
     description: 'An array of URLs for the vehicle’s photos.',
     type: [String],
     example: [
