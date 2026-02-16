@@ -8,4 +8,5 @@ export declare class UpdateAgencyDto {
     ubicacion?: string;
     whatsapp?: string;
     plan?: Plan;
+    limitePublicaciones?: number;
 }

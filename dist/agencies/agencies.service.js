@@ -31,6 +31,10 @@ let AgenciesService = class AgenciesService {
         return result;
     }
     async updateProfile(id, updateAgencyDto) {
+        if (updateAgencyDto.plan) {
+            const planLimit = agency_entity_1.PLAN_LIMITS[updateAgencyDto.plan];
+            updateAgencyDto.limitePublicaciones = planLimit === -1 ? 999999 : planLimit;
+        }
         const agency = await this.agencyRepository.preload({
             id,
             ...updateAgencyDto,

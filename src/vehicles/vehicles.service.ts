@@ -2,13 +2,14 @@ import {
   Injectable,
   NotFoundException,
   UnauthorizedException,
+  ForbiddenException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Vehicle } from 'src/database/vehicle.entity';
 import { CreateVehicleDto } from './dto/create-vehicle.dto';
 import { UpdateVehicleDto } from './dto/update-vehicle.dto';
-import { Agency } from 'src/database/agency.entity';
+import { Agency, PLAN_LIMITS } from 'src/database/agency.entity';
 
 @Injectable()
 export class VehiclesService {
@@ -21,6 +22,20 @@ export class VehiclesService {
     createVehicleDto: CreateVehicleDto,
     user: Agency,
   ): Promise<Vehicle> {
+    // Verificar límite de publicaciones según el plan
+    const currentVehicleCount = await this.vehicleRepository.count({
+      where: { agencyId: user.id },
+    });
+
+    const planLimit = PLAN_LIMITS[user.plan];
+
+    // Si el límite no es -1 (sin límite) y se ha alcanzado el máximo
+    if (planLimit !== -1 && currentVehicleCount >= planLimit) {
+      throw new ForbiddenException(
+        `Has alcanzado el límite de ${planLimit} publicaciones de tu plan ${user.plan}. Actualiza tu plan para publicar más vehículos.`
+      );
+    }
+
     const vehicle = this.vehicleRepository.create({
       ...createVehicleDto,
       agency: user,

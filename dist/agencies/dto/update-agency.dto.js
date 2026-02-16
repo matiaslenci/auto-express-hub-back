@@ -22,6 +22,7 @@ class UpdateAgencyDto {
     ubicacion;
     whatsapp;
     plan;
+    limitePublicaciones;
 }
 exports.UpdateAgencyDto = UpdateAgencyDto;
 __decorate([
@@ -56,7 +57,7 @@ __decorate([
 ], UpdateAgencyDto.prototype, "nombre", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)({
-        description: 'The new URL of the agency’s logo.',
+        description: "The new URL of the agency's logo.",
         example: 'https://example.com/newlogo.png',
         required: false,
     }),
@@ -66,7 +67,7 @@ __decorate([
 ], UpdateAgencyDto.prototype, "logo", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)({
-        description: 'The new URL of the agency’s cover image.',
+        description: "The new URL of the agency's cover image.",
         example: 'https://example.com/newcover.png',
         required: false,
     }),
@@ -104,4 +105,14 @@ __decorate([
     (0, class_validator_1.IsOptional)(),
     __metadata("design:type", String)
 ], UpdateAgencyDto.prototype, "plan", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({
+        description: 'The maximum number of publications allowed for the agency.',
+        example: 50,
+        required: false,
+    }),
+    (0, class_validator_1.IsNumber)({}, { message: 'El límite de publicaciones debe ser un número' }),
+    (0, class_validator_1.IsOptional)(),
+    __metadata("design:type", Number)
+], UpdateAgencyDto.prototype, "limitePublicaciones", void 0);
 //# sourceMappingURL=update-agency.dto.js.map

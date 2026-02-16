@@ -1,5 +1,5 @@
 
-import { IsEmail, IsString, IsOptional, IsEnum } from 'class-validator';
+import { IsEmail, IsString, IsOptional, IsEnum, IsNumber } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { Plan } from 'src/database/agency.entity';
 
@@ -32,7 +32,7 @@ export class UpdateAgencyDto {
   nombre?: string;
 
   @ApiProperty({
-    description: 'The new URL of the agency’s logo.',
+    description: "The new URL of the agency's logo.",
     example: 'https://example.com/newlogo.png',
     required: false,
   })
@@ -41,7 +41,7 @@ export class UpdateAgencyDto {
   logo?: string;
 
   @ApiProperty({
-    description: 'The new URL of the agency’s cover image.',
+    description: "The new URL of the agency's cover image.",
     example: 'https://example.com/newcover.png',
     required: false,
   })
@@ -75,4 +75,13 @@ export class UpdateAgencyDto {
   @IsEnum(Plan, { message: 'El plan debe ser uno de los valores válidos' })
   @IsOptional()
   plan?: Plan;
+
+  @ApiProperty({
+    description: 'The maximum number of publications allowed for the agency.',
+    example: 50,
+    required: false,
+  })
+  @IsNumber({}, { message: 'El límite de publicaciones debe ser un número' })
+  @IsOptional()
+  limitePublicaciones?: number;
 }

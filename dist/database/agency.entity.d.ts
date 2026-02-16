@@ -4,6 +4,7 @@ export declare enum Plan {
     PROFESIONAL = "profesional",
     PREMIUM = "premium"
 }
+export declare const PLAN_LIMITS: Record<Plan, number>;
 export declare class Agency {
     id: string;
     username: string;

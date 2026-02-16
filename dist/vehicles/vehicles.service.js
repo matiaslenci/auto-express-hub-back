@@ -17,12 +17,20 @@ const common_1 = require("@nestjs/common");
 const typeorm_1 = require("@nestjs/typeorm");
 const typeorm_2 = require("typeorm");
 const vehicle_entity_1 = require("../database/vehicle.entity");
+const agency_entity_1 = require("../database/agency.entity");
 let VehiclesService = class VehiclesService {
     vehicleRepository;
     constructor(vehicleRepository) {
         this.vehicleRepository = vehicleRepository;
     }
     async createVehicle(createVehicleDto, user) {
+        const currentVehicleCount = await this.vehicleRepository.count({
+            where: { agencyId: user.id },
+        });
+        const planLimit = agency_entity_1.PLAN_LIMITS[user.plan];
+        if (planLimit !== -1 && currentVehicleCount >= planLimit) {
+            throw new common_1.ForbiddenException(`Has alcanzado el límite de ${planLimit} publicaciones de tu plan ${user.plan}. Actualiza tu plan para publicar más vehículos.`);
+        }
         const vehicle = this.vehicleRepository.create({
             ...createVehicleDto,
             agency: user,

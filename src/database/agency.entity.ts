@@ -17,6 +17,13 @@ export enum Plan {
   PREMIUM = 'premium',
 }
 
+// Límites de publicaciones por plan (-1 = sin límite)
+export const PLAN_LIMITS: Record<Plan, number> = {
+  [Plan.BASICO]: 10,
+  [Plan.PROFESIONAL]: 50,
+  [Plan.PREMIUM]: -1,
+};
+
 @Entity('agencies')
 export class Agency {
   @ApiProperty({
