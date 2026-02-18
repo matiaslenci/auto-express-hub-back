@@ -16,6 +16,11 @@ export enum TipoMoneda {
   CONSULTAR = 'CONSULTAR',
 }
 
+export enum TipoVehiculo {
+  AUTO = 'AUTO',
+  MOTO = 'MOTO',
+}
+
 @Entity('vehicles')
 export class Vehicle {
   @ApiProperty({
@@ -28,6 +33,14 @@ export class Vehicle {
   @ApiProperty({ description: 'The brand of the vehicle.', example: 'Toyota' })
   @Column({ type: 'varchar' })
   marca: string;
+
+  @ApiProperty({
+    description: 'Tipo de vehículo: AUTO o MOTO.',
+    enum: TipoVehiculo,
+    example: TipoVehiculo.AUTO,
+  })
+  @Column({ type: 'enum', enum: TipoVehiculo, default: TipoVehiculo.AUTO })
+  tipoVehiculo: TipoVehiculo;
 
   @ApiProperty({ description: 'The model of the vehicle.', example: 'Corolla' })
   @Column({ type: 'varchar' })

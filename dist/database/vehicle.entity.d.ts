@@ -4,9 +4,14 @@ export declare enum TipoMoneda {
     USD = "USD",
     CONSULTAR = "CONSULTAR"
 }
+export declare enum TipoVehiculo {
+    AUTO = "AUTO",
+    MOTO = "MOTO"
+}
 export declare class Vehicle {
     id: string;
     marca: string;
+    tipoVehiculo: TipoVehiculo;
     modelo: string;
     anio: number;
     precio: number | null;

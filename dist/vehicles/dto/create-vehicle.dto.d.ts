@@ -1,6 +1,7 @@
-import { TipoMoneda } from '../../database/vehicle.entity';
+import { TipoMoneda, TipoVehiculo } from '../../database/vehicle.entity';
 export declare class CreateVehicleDto {
     marca: string;
+    tipoVehiculo: TipoVehiculo;
     modelo: string;
     anio: number;
     precio?: number;

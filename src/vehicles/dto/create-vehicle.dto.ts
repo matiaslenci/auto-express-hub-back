@@ -9,7 +9,7 @@ import {
   IsNotEmpty,
   IsEnum,
 } from 'class-validator';
-import { TipoMoneda } from '../../database/vehicle.entity';
+import { TipoMoneda, TipoVehiculo } from '../../database/vehicle.entity';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateVehicleDto {
@@ -17,6 +17,15 @@ export class CreateVehicleDto {
   @IsString({ message: 'La marca debe ser una cadena de texto' })
   @IsNotEmpty({ message: 'La marca es obligatoria' })
   marca: string;
+
+  @ApiProperty({
+    description: 'Tipo de vehículo: AUTO o MOTO.',
+    enum: TipoVehiculo,
+    example: TipoVehiculo.AUTO,
+  })
+  @IsEnum(TipoVehiculo, { message: 'El tipo de vehículo debe ser un valor válido (AUTO o MOTO)' })
+  @IsNotEmpty({ message: 'El tipo de vehículo es obligatorio' })
+  tipoVehiculo: TipoVehiculo;
 
   @ApiProperty({ description: 'The model of the vehicle.', example: 'Corolla' })
   @IsString({ message: 'El modelo debe ser una cadena de texto' })

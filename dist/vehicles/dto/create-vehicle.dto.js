@@ -15,6 +15,7 @@ const vehicle_entity_1 = require("../../database/vehicle.entity");
 const swagger_1 = require("@nestjs/swagger");
 class CreateVehicleDto {
     marca;
+    tipoVehiculo;
     modelo;
     anio;
     precio;
@@ -36,6 +37,16 @@ __decorate([
     (0, class_validator_1.IsNotEmpty)({ message: 'La marca es obligatoria' }),
     __metadata("design:type", String)
 ], CreateVehicleDto.prototype, "marca", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({
+        description: 'Tipo de vehículo: AUTO o MOTO.',
+        enum: vehicle_entity_1.TipoVehiculo,
+        example: vehicle_entity_1.TipoVehiculo.AUTO,
+    }),
+    (0, class_validator_1.IsEnum)(vehicle_entity_1.TipoVehiculo, { message: 'El tipo de vehículo debe ser un valor válido (AUTO o MOTO)' }),
+    (0, class_validator_1.IsNotEmpty)({ message: 'El tipo de vehículo es obligatorio' }),
+    __metadata("design:type", String)
+], CreateVehicleDto.prototype, "tipoVehiculo", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)({ description: 'The model of the vehicle.', example: 'Corolla' }),
     (0, class_validator_1.IsString)({ message: 'El modelo debe ser una cadena de texto' }),

@@ -9,7 +9,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Vehicle = exports.TipoMoneda = void 0;
+exports.Vehicle = exports.TipoVehiculo = exports.TipoMoneda = void 0;
 const typeorm_1 = require("typeorm");
 const agency_entity_1 = require("./agency.entity");
 const swagger_1 = require("@nestjs/swagger");
@@ -19,9 +19,15 @@ var TipoMoneda;
     TipoMoneda["USD"] = "USD";
     TipoMoneda["CONSULTAR"] = "CONSULTAR";
 })(TipoMoneda || (exports.TipoMoneda = TipoMoneda = {}));
+var TipoVehiculo;
+(function (TipoVehiculo) {
+    TipoVehiculo["AUTO"] = "AUTO";
+    TipoVehiculo["MOTO"] = "MOTO";
+})(TipoVehiculo || (exports.TipoVehiculo = TipoVehiculo = {}));
 let Vehicle = class Vehicle {
     id;
     marca;
+    tipoVehiculo;
     modelo;
     anio;
     precio;
@@ -55,6 +61,15 @@ __decorate([
     (0, typeorm_1.Column)({ type: 'varchar' }),
     __metadata("design:type", String)
 ], Vehicle.prototype, "marca", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({
+        description: 'Tipo de vehículo: AUTO o MOTO.',
+        enum: TipoVehiculo,
+        example: TipoVehiculo.AUTO,
+    }),
+    (0, typeorm_1.Column)({ type: 'enum', enum: TipoVehiculo, default: TipoVehiculo.AUTO }),
+    __metadata("design:type", String)
+], Vehicle.prototype, "tipoVehiculo", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)({ description: 'The model of the vehicle.', example: 'Corolla' }),
     (0, typeorm_1.Column)({ type: 'varchar' }),
