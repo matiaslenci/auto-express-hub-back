@@ -12,7 +12,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.UpdateAgencyDto = void 0;
 const class_validator_1 = require("class-validator");
 const swagger_1 = require("@nestjs/swagger");
-const agency_entity_1 = require("../../database/agency.entity");
 class UpdateAgencyDto {
     username;
     email;
@@ -21,8 +20,6 @@ class UpdateAgencyDto {
     portada;
     ubicacion;
     whatsapp;
-    plan;
-    limitePublicaciones;
 }
 exports.UpdateAgencyDto = UpdateAgencyDto;
 __decorate([
@@ -95,24 +92,4 @@ __decorate([
     (0, class_validator_1.IsOptional)(),
     __metadata("design:type", String)
 ], UpdateAgencyDto.prototype, "whatsapp", void 0);
-__decorate([
-    (0, swagger_1.ApiProperty)({
-        description: 'The new subscription plan of the agency.',
-        enum: agency_entity_1.Plan,
-        required: false,
-    }),
-    (0, class_validator_1.IsEnum)(agency_entity_1.Plan, { message: 'El plan debe ser uno de los valores válidos' }),
-    (0, class_validator_1.IsOptional)(),
-    __metadata("design:type", String)
-], UpdateAgencyDto.prototype, "plan", void 0);
-__decorate([
-    (0, swagger_1.ApiProperty)({
-        description: 'The maximum number of publications allowed for the agency.',
-        example: 50,
-        required: false,
-    }),
-    (0, class_validator_1.IsNumber)({}, { message: 'El límite de publicaciones debe ser un número' }),
-    (0, class_validator_1.IsOptional)(),
-    __metadata("design:type", Number)
-], UpdateAgencyDto.prototype, "limitePublicaciones", void 0);
 //# sourceMappingURL=update-agency.dto.js.map

@@ -1,4 +1,3 @@
-import { Plan } from 'src/database/agency.entity';
 export declare class UpdateAgencyDto {
     username?: string;
     email?: string;
@@ -7,6 +6,4 @@ export declare class UpdateAgencyDto {
     portada?: string;
     ubicacion?: string;
     whatsapp?: string;
-    plan?: Plan;
-    limitePublicaciones?: number;
 }

@@ -10,6 +10,7 @@ exports.AppModule = void 0;
 const common_1 = require("@nestjs/common");
 const typeorm_1 = require("@nestjs/typeorm");
 const config_1 = require("@nestjs/config");
+const throttler_1 = require("@nestjs/throttler");
 const agency_entity_1 = require("./database/agency.entity");
 const vehicle_entity_1 = require("./database/vehicle.entity");
 const database_module_1 = require("./database/database.module");
@@ -26,6 +27,10 @@ exports.AppModule = AppModule = __decorate([
             config_1.ConfigModule.forRoot({
                 isGlobal: true,
             }),
+            throttler_1.ThrottlerModule.forRoot([{
+                    ttl: 60000,
+                    limit: 60,
+                }]),
             typeorm_1.TypeOrmModule.forRootAsync({
                 imports: [config_1.ConfigModule],
                 useFactory: (configService) => ({
@@ -36,7 +41,7 @@ exports.AppModule = AppModule = __decorate([
                     password: configService.get('DB_PASSWORD'),
                     database: configService.get('DB_DATABASE'),
                     entities: [agency_entity_1.Agency, vehicle_entity_1.Vehicle],
-                    synchronize: true,
+                    synchronize: configService.get('NODE_ENV') !== 'production',
                 }),
                 inject: [config_1.ConfigService],
             }),

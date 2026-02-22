@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ThrottlerModule } from '@nestjs/throttler';
 import { Agency } from './database/agency.entity';
 import { Vehicle } from './database/vehicle.entity';
 import { DatabaseModule } from './database/database.module';
@@ -14,6 +15,10 @@ import { UploadsModule } from './uploads/uploads.module';
     ConfigModule.forRoot({
       isGlobal: true,
     }),
+    ThrottlerModule.forRoot([{
+      ttl: 60000, // 1 minuto
+      limit: 60,  // 60 requests por minuto
+    }]),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: (configService: ConfigService) => ({
@@ -24,7 +29,7 @@ import { UploadsModule } from './uploads/uploads.module';
         password: configService.get<string>('DB_PASSWORD'),
         database: configService.get<string>('DB_DATABASE'),
         entities: [Agency, Vehicle],
-        synchronize: true, // TODO: Modificar en producción
+        synchronize: configService.get('NODE_ENV') !== 'production', // Solo sincronizar en desarrollo
       }),
       inject: [ConfigService],
     }),

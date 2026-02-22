@@ -8,22 +8,36 @@ import { join } from 'path';
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
-  app.enableCors();
-  app.useGlobalPipes(new ValidationPipe());
+  // Configurar CORS con orígenes específicos
+  const allowedOrigins = process.env.CORS_ORIGINS
+    ? process.env.CORS_ORIGINS.split(',')
+    : ['http://localhost:5173'];
+  app.enableCors({
+    origin: allowedOrigins,
+    methods: ['GET', 'POST', 'PATCH', 'DELETE'],
+    credentials: true,
+  });
+  app.useGlobalPipes(new ValidationPipe({
+    whitelist: true,              // Elimina propiedades no definidas en el DTO
+    forbidNonWhitelisted: true,   // Lanza error si se envían propiedades no permitidas
+  }));
 
   // Serve static files from /uploads
   app.useStaticAssets(join(process.cwd(), 'uploads'), {
     prefix: '/uploads/',
   });
 
-  const config = new DocumentBuilder()
-    .setTitle('Auto Express Hub API')
-    .setDescription('The API for the Auto Express Hub application.')
-    .setVersion('1.0')
-    .addBearerAuth()
-    .build();
-  const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api', app, document);
+  // Swagger solo disponible en desarrollo
+  if (process.env.NODE_ENV !== 'production') {
+    const config = new DocumentBuilder()
+      .setTitle('Auto Express Hub API')
+      .setDescription('The API for the Auto Express Hub application.')
+      .setVersion('1.0')
+      .addBearerAuth()
+      .build();
+    const document = SwaggerModule.createDocument(app, config);
+    SwaggerModule.setup('api', app, document);
+  }
 
   await app.listen(process.env.PORT || 3000);
 }

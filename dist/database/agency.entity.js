@@ -70,7 +70,7 @@ __decorate([
     __metadata("design:type", String)
 ], Agency.prototype, "email", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: 'varchar' }),
+    (0, typeorm_1.Column)({ type: 'varchar', select: false }),
     __metadata("design:type", String)
 ], Agency.prototype, "password", void 0);
 __decorate([

@@ -7,19 +7,31 @@ const common_1 = require("@nestjs/common");
 const path_1 = require("path");
 async function bootstrap() {
     const app = await core_1.NestFactory.create(app_module_1.AppModule);
-    app.enableCors();
-    app.useGlobalPipes(new common_1.ValidationPipe());
+    const allowedOrigins = process.env.CORS_ORIGINS
+        ? process.env.CORS_ORIGINS.split(',')
+        : ['http://localhost:5173'];
+    app.enableCors({
+        origin: allowedOrigins,
+        methods: ['GET', 'POST', 'PATCH', 'DELETE'],
+        credentials: true,
+    });
+    app.useGlobalPipes(new common_1.ValidationPipe({
+        whitelist: true,
+        forbidNonWhitelisted: true,
+    }));
     app.useStaticAssets((0, path_1.join)(process.cwd(), 'uploads'), {
         prefix: '/uploads/',
     });
-    const config = new swagger_1.DocumentBuilder()
-        .setTitle('Auto Express Hub API')
-        .setDescription('The API for the Auto Express Hub application.')
-        .setVersion('1.0')
-        .addBearerAuth()
-        .build();
-    const document = swagger_1.SwaggerModule.createDocument(app, config);
-    swagger_1.SwaggerModule.setup('api', app, document);
+    if (process.env.NODE_ENV !== 'production') {
+        const config = new swagger_1.DocumentBuilder()
+            .setTitle('Auto Express Hub API')
+            .setDescription('The API for the Auto Express Hub application.')
+            .setVersion('1.0')
+            .addBearerAuth()
+            .build();
+        const document = swagger_1.SwaggerModule.createDocument(app, config);
+        swagger_1.SwaggerModule.setup('api', app, document);
+    }
     await app.listen(process.env.PORT || 3000);
 }
 bootstrap();

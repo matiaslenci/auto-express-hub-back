@@ -80,7 +80,23 @@ export class UploadsService {
     }
 
     async deleteImage(folder: UploadFolder, filename: string): Promise<void> {
-        const filePath = path.join(this.uploadsPath, folder, filename);
+        // Sanitizar filename contra path traversal
+        if (
+            filename.includes('..') ||
+            filename.includes('/') ||
+            filename.includes('\\')
+        ) {
+            throw new BadRequestException('Nombre de archivo no válido.');
+        }
+        const safeName = path.basename(filename);
+        const filePath = path.join(this.uploadsPath, folder, safeName);
+
+        // Verificar que el path resuelto está dentro del directorio de uploads
+        const resolvedPath = path.resolve(filePath);
+        const uploadsDir = path.resolve(this.uploadsPath);
+        if (!resolvedPath.startsWith(uploadsDir)) {
+            throw new BadRequestException('Nombre de archivo no válido.');
+        }
 
         if (!fs.existsSync(filePath)) {
             throw new NotFoundException('Imagen no encontrada.');

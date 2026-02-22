@@ -66,6 +66,9 @@ __decorate([
     (0, class_validator_1.IsString)({ message: 'La contraseña debe ser una cadena de texto' }),
     (0, class_validator_1.IsNotEmpty)({ message: 'La contraseña es obligatoria' }),
     (0, class_validator_1.MinLength)(8, { message: 'La contraseña debe tener al menos 8 caracteres' }),
+    (0, class_validator_1.Matches)(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).{8,}$/, {
+        message: 'La contraseña debe incluir al menos una mayúscula, una minúscula, un número y un carácter especial (@$!%*?&)',
+    }),
     __metadata("design:type", String)
 ], CreateAgencyDto.prototype, "password", void 0);
 //# sourceMappingURL=create-agency.dto.js.map

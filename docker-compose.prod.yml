@@ -9,20 +9,21 @@ services:
     environment:
       DB_HOST: db
       DB_PORT: 5432
-      DB_USERNAME: postgres
-      DB_PASSWORD: admin
-      DB_DATABASE: auto-express-hub
-      JWT_SECRET: yourSecretKey
-      JWT_EXPIRES_IN: 3600s
+      DB_USERNAME: ${DB_USERNAME:-postgres}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_DATABASE: ${DB_DATABASE:-auto-express-hub}
+      JWT_SECRET: ${JWT_SECRET}
+      JWT_EXPIRES_IN: ${JWT_EXPIRES_IN:-3600}
+      NODE_ENV: production
+      CORS_ORIGINS: ${CORS_ORIGINS}
 
   db:
     image: postgres:14-alpine
-    ports:
-      - '5432:5432'
+    # Puerto NO expuesto al host en producción por seguridad
     environment:
-      POSTGRES_DB: auto-express-hub
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: ${DB_DATABASE:-auto-express-hub}
+      POSTGRES_USER: ${DB_USERNAME:-postgres}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
