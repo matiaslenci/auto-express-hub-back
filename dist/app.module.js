@@ -13,11 +13,13 @@ const config_1 = require("@nestjs/config");
 const throttler_1 = require("@nestjs/throttler");
 const agency_entity_1 = require("./database/agency.entity");
 const vehicle_entity_1 = require("./database/vehicle.entity");
+const vehicle_analytics_entity_1 = require("./database/vehicle-analytics.entity");
 const database_module_1 = require("./database/database.module");
 const auth_module_1 = require("./auth/auth.module");
 const agencies_module_1 = require("./agencies/agencies.module");
 const vehicles_module_1 = require("./vehicles/vehicles.module");
 const uploads_module_1 = require("./uploads/uploads.module");
+const analytics_module_1 = require("./analytics/analytics.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -40,7 +42,7 @@ exports.AppModule = AppModule = __decorate([
                     username: configService.get('DB_USERNAME'),
                     password: configService.get('DB_PASSWORD'),
                     database: configService.get('DB_DATABASE'),
-                    entities: [agency_entity_1.Agency, vehicle_entity_1.Vehicle],
+                    entities: [agency_entity_1.Agency, vehicle_entity_1.Vehicle, vehicle_analytics_entity_1.VehicleAnalytics],
                     synchronize: configService.get('NODE_ENV') !== 'production',
                 }),
                 inject: [config_1.ConfigService],
@@ -50,6 +52,7 @@ exports.AppModule = AppModule = __decorate([
             agencies_module_1.AgenciesModule,
             vehicles_module_1.VehiclesModule,
             uploads_module_1.UploadsModule,
+            analytics_module_1.AnalyticsModule,
         ],
         controllers: [],
         providers: [],

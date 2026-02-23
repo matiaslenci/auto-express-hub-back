@@ -11,12 +11,13 @@ const common_1 = require("@nestjs/common");
 const typeorm_1 = require("@nestjs/typeorm");
 const agency_entity_1 = require("./agency.entity");
 const vehicle_entity_1 = require("./vehicle.entity");
+const vehicle_analytics_entity_1 = require("./vehicle-analytics.entity");
 let DatabaseModule = class DatabaseModule {
 };
 exports.DatabaseModule = DatabaseModule;
 exports.DatabaseModule = DatabaseModule = __decorate([
     (0, common_1.Module)({
-        imports: [typeorm_1.TypeOrmModule.forFeature([agency_entity_1.Agency, vehicle_entity_1.Vehicle])],
+        imports: [typeorm_1.TypeOrmModule.forFeature([agency_entity_1.Agency, vehicle_entity_1.Vehicle, vehicle_analytics_entity_1.VehicleAnalytics])],
         exports: [typeorm_1.TypeOrmModule],
     })
 ], DatabaseModule);

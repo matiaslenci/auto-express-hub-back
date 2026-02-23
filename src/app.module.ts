@@ -4,11 +4,13 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { Agency } from './database/agency.entity';
 import { Vehicle } from './database/vehicle.entity';
+import { VehicleAnalytics } from './database/vehicle-analytics.entity';
 import { DatabaseModule } from './database/database.module';
 import { AuthModule } from './auth/auth.module';
 import { AgenciesModule } from './agencies/agencies.module';
 import { VehiclesModule } from './vehicles/vehicles.module';
 import { UploadsModule } from './uploads/uploads.module';
+import { AnalyticsModule } from './analytics/analytics.module';
 
 @Module({
   imports: [
@@ -28,7 +30,7 @@ import { UploadsModule } from './uploads/uploads.module';
         username: configService.get<string>('DB_USERNAME'),
         password: configService.get<string>('DB_PASSWORD'),
         database: configService.get<string>('DB_DATABASE'),
-        entities: [Agency, Vehicle],
+        entities: [Agency, Vehicle, VehicleAnalytics],
         synchronize: configService.get('NODE_ENV') !== 'production', // Solo sincronizar en desarrollo
       }),
       inject: [ConfigService],
@@ -38,6 +40,7 @@ import { UploadsModule } from './uploads/uploads.module';
     AgenciesModule,
     VehiclesModule,
     UploadsModule,
+    AnalyticsModule,
   ],
   controllers: [],
   providers: [],

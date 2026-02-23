@@ -18,10 +18,13 @@ const typeorm_1 = require("@nestjs/typeorm");
 const typeorm_2 = require("typeorm");
 const vehicle_entity_1 = require("../database/vehicle.entity");
 const agency_entity_1 = require("../database/agency.entity");
+const analytics_service_1 = require("../analytics/analytics.service");
 let VehiclesService = class VehiclesService {
     vehicleRepository;
-    constructor(vehicleRepository) {
+    analyticsService;
+    constructor(vehicleRepository, analyticsService) {
         this.vehicleRepository = vehicleRepository;
+        this.analyticsService = analyticsService;
     }
     async createVehicle(createVehicleDto, user) {
         const currentVehicleCount = await this.vehicleRepository.count({
@@ -75,11 +78,13 @@ let VehiclesService = class VehiclesService {
     async incrementView(id) {
         const vehicle = await this.getVehicleById(id);
         vehicle.vistas += 1;
+        await this.analyticsService.registerView(id);
         return this.vehicleRepository.save(vehicle);
     }
     async incrementWhatsAppClick(id) {
         const vehicle = await this.getVehicleById(id);
         vehicle.clicksWhatsapp += 1;
+        await this.analyticsService.registerWhatsAppClick(id);
         return this.vehicleRepository.save(vehicle);
     }
 };
@@ -87,6 +92,7 @@ exports.VehiclesService = VehiclesService;
 exports.VehiclesService = VehiclesService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, typeorm_1.InjectRepository)(vehicle_entity_1.Vehicle)),
-    __metadata("design:paramtypes", [typeorm_2.Repository])
+    __metadata("design:paramtypes", [typeorm_2.Repository,
+        analytics_service_1.AnalyticsService])
 ], VehiclesService);
 //# sourceMappingURL=vehicles.service.js.map

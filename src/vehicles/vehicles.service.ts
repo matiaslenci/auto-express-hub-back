@@ -10,12 +10,14 @@ import { Vehicle } from 'src/database/vehicle.entity';
 import { CreateVehicleDto } from './dto/create-vehicle.dto';
 import { UpdateVehicleDto } from './dto/update-vehicle.dto';
 import { Agency, PLAN_LIMITS } from 'src/database/agency.entity';
+import { AnalyticsService } from 'src/analytics/analytics.service';
 
 @Injectable()
 export class VehiclesService {
   constructor(
     @InjectRepository(Vehicle)
     private readonly vehicleRepository: Repository<Vehicle>,
+    private readonly analyticsService: AnalyticsService,
   ) { }
 
   async createVehicle(
@@ -89,12 +91,14 @@ export class VehiclesService {
   async incrementView(id: string): Promise<Vehicle> {
     const vehicle = await this.getVehicleById(id);
     vehicle.vistas += 1;
+    await this.analyticsService.registerView(id);
     return this.vehicleRepository.save(vehicle);
   }
 
   async incrementWhatsAppClick(id: string): Promise<Vehicle> {
     const vehicle = await this.getVehicleById(id);
     vehicle.clicksWhatsapp += 1;
+    await this.analyticsService.registerWhatsAppClick(id);
     return this.vehicleRepository.save(vehicle);
   }
 }

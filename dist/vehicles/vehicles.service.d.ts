@@ -3,9 +3,11 @@ import { Vehicle } from 'src/database/vehicle.entity';
 import { CreateVehicleDto } from './dto/create-vehicle.dto';
 import { UpdateVehicleDto } from './dto/update-vehicle.dto';
 import { Agency } from 'src/database/agency.entity';
+import { AnalyticsService } from 'src/analytics/analytics.service';
 export declare class VehiclesService {
     private readonly vehicleRepository;
-    constructor(vehicleRepository: Repository<Vehicle>);
+    private readonly analyticsService;
+    constructor(vehicleRepository: Repository<Vehicle>, analyticsService: AnalyticsService);
     createVehicle(createVehicleDto: CreateVehicleDto, user: Agency): Promise<Vehicle>;
     getVehicles(agencyId?: string): Promise<Vehicle[]>;
     getVehicleById(id: string): Promise<Vehicle>;
