@@ -129,6 +129,17 @@ export class Agency {
   @UpdateDateColumn({ type: 'timestamptz', default: () => 'CURRENT_TIMESTAMP' })
   updatedAt: Date;
 
+  @Column({ type: 'boolean', default: false })
+  isAdmin: boolean;
+
+  @ApiProperty({
+    description: 'Indicates if the agency is currently active (has paid for the month).',
+    example: true,
+    default: true,
+  })
+  @Column({ type: 'boolean', default: true })
+  isActive: boolean;
+
   @OneToMany(() => Vehicle, (vehicle) => vehicle.agency)
   vehicles: Vehicle[];
 }

@@ -19,5 +19,7 @@ export declare class Agency {
     limitePublicaciones: number;
     createdAt: Date;
     updatedAt: Date;
+    isAdmin: boolean;
+    isActive: boolean;
     vehicles: Vehicle[];
 }

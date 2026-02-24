@@ -11,6 +11,7 @@ import { AgenciesModule } from './agencies/agencies.module';
 import { VehiclesModule } from './vehicles/vehicles.module';
 import { UploadsModule } from './uploads/uploads.module';
 import { AnalyticsModule } from './analytics/analytics.module';
+import { AdminModule } from './admin/admin.module';
 
 @Module({
   imports: [
@@ -41,6 +42,7 @@ import { AnalyticsModule } from './analytics/analytics.module';
     VehiclesModule,
     UploadsModule,
     AnalyticsModule,
+    AdminModule,
   ],
   controllers: [],
   providers: [],

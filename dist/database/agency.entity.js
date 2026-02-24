@@ -38,6 +38,8 @@ let Agency = class Agency {
     limitePublicaciones;
     createdAt;
     updatedAt;
+    isAdmin;
+    isActive;
     vehicles;
 };
 exports.Agency = Agency;
@@ -157,6 +159,19 @@ __decorate([
     (0, typeorm_1.UpdateDateColumn)({ type: 'timestamptz', default: () => 'CURRENT_TIMESTAMP' }),
     __metadata("design:type", Date)
 ], Agency.prototype, "updatedAt", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ type: 'boolean', default: false }),
+    __metadata("design:type", Boolean)
+], Agency.prototype, "isAdmin", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({
+        description: 'Indicates if the agency is currently active (has paid for the month).',
+        example: true,
+        default: true,
+    }),
+    (0, typeorm_1.Column)({ type: 'boolean', default: true }),
+    __metadata("design:type", Boolean)
+], Agency.prototype, "isActive", void 0);
 __decorate([
     (0, typeorm_1.OneToMany)(() => vehicle_entity_1.Vehicle, (vehicle) => vehicle.agency),
     __metadata("design:type", Array)
