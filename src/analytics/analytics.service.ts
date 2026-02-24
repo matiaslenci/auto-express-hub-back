@@ -66,8 +66,30 @@ export class AnalyticsService {
             .innerJoin('analytics.vehicle', 'vehicle')
             .where('vehicle.agencyId = :agencyId', { agencyId })
             .select('SUM(analytics.viewsCount)', 'totalViews')
-            .select('SUM(analytics.clicksCount)', 'totalClicks')
+            .addSelect('SUM(analytics.clicksCount)', 'totalClicks')
             .getRawOne();
+
+        const startDate = new Date();
+        startDate.setDate(startDate.getDate() - 30);
+        const startDateString = startDate.toISOString().split('T')[0];
+
+        const dailyStatsRaw = await this.analyticsRepository
+            .createQueryBuilder('analytics')
+            .innerJoin('analytics.vehicle', 'vehicle')
+            .where('vehicle.agencyId = :agencyId', { agencyId })
+            .andWhere('analytics.date >= :startDate', { startDate: startDateString })
+            .select('analytics.date', 'date')
+            .addSelect('SUM(analytics.viewsCount)', 'viewsCount')
+            .addSelect('SUM(analytics.clicksCount)', 'clicksCount')
+            .groupBy('analytics.date')
+            .orderBy('analytics.date', 'ASC')
+            .getRawMany();
+
+        const dailyHistory = dailyStatsRaw.map(stat => ({
+            date: typeof stat.date === 'string' ? stat.date : new Date(stat.date).toISOString().split('T')[0],
+            viewsCount: parseInt(stat.viewsCount) || 0,
+            clicksCount: parseInt(stat.clicksCount) || 0,
+        }));
 
         const totalViews = parseInt(stats.totalViews) || 0;
         const totalClicks = parseInt(stats.totalClicks) || 0;
@@ -78,6 +100,7 @@ export class AnalyticsService {
             totalViews,
             totalClicks,
             conversionRate: parseFloat(conversionRate.toFixed(2)),
+            dailyHistory,
         };
     }
 
