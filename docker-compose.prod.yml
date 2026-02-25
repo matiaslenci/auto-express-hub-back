@@ -5,7 +5,8 @@ services:
     ports:
       - '3000:3000'
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     environment:
       DB_HOST: db
       DB_PORT: 5432
@@ -13,9 +14,19 @@ services:
       DB_PASSWORD: ${DB_PASSWORD}
       DB_DATABASE: ${DB_DATABASE:-auto-express-hub}
       JWT_SECRET: ${JWT_SECRET}
-      JWT_EXPIRES_IN: ${JWT_EXPIRES_IN:-3600}
+      JWT_EXPIRES_IN: ${JWT_EXPIRES_IN:-86400}
       NODE_ENV: production
       CORS_ORIGINS: ${CORS_ORIGINS}
+      PORT: ${PORT:-3000}
+    volumes:
+      - uploads_data:/usr/src/app/uploads
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:3000/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
 
   db:
     image: postgres:14-alpine
@@ -26,6 +37,13 @@ services:
       POSTGRES_PASSWORD: ${DB_PASSWORD}
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USERNAME:-postgres} -d ${DB_DATABASE:-auto-express-hub}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
 volumes:
   postgres_data:
+  uploads_data:

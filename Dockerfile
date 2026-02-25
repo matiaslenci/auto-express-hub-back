@@ -6,7 +6,7 @@ RUN npm i -g bun
 
 WORKDIR /usr/src/app
 
-COPY package.json ./
+COPY package.json bun.lock ./
 RUN bun install --frozen-lockfile
 
 COPY . .
@@ -20,9 +20,15 @@ RUN npm i -g bun
 
 WORKDIR /usr/src/app
 
+# Crear directorio de uploads con permisos del usuario node (non-root)
+RUN mkdir -p uploads && chown node:node uploads
+
 COPY --from=builder /usr/src/app/dist ./dist
 COPY --from=builder /usr/src/app/node_modules ./node_modules
 COPY --from=builder /usr/src/app/package.json ./package.json
+
+# Correr como usuario no-root por seguridad
+USER node
 
 EXPOSE 3000
 

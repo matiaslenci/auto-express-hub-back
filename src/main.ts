@@ -4,9 +4,16 @@ import { AppModule } from './app.module';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { ValidationPipe } from '@nestjs/common';
 import { join } from 'path';
+import helmet from 'helmet';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
+
+  // Graceful shutdown (para Docker / PM2)
+  app.enableShutdownHooks();
+
+  // Seguridad HTTP: headers de protección
+  app.use(helmet());
 
   // Configurar CORS con orígenes específicos
   const allowedOrigins = process.env.CORS_ORIGINS
@@ -17,6 +24,7 @@ async function bootstrap() {
     methods: ['GET', 'POST', 'PATCH', 'DELETE'],
     credentials: true,
   });
+
   app.useGlobalPipes(new ValidationPipe({
     whitelist: true,              // Elimina propiedades no definidas en el DTO
     forbidNonWhitelisted: true,   // Lanza error si se envían propiedades no permitidas
@@ -39,6 +47,8 @@ async function bootstrap() {
     SwaggerModule.setup('api', app, document);
   }
 
-  await app.listen(process.env.PORT || 3000);
+  const port = process.env.PORT || 3000;
+  await app.listen(port);
+  console.log(`Application running on port ${port} [${process.env.NODE_ENV || 'development'}]`);
 }
 bootstrap();
