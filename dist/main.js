@@ -12,7 +12,9 @@ const helmet_1 = __importDefault(require("helmet"));
 async function bootstrap() {
     const app = await core_1.NestFactory.create(app_module_1.AppModule);
     app.enableShutdownHooks();
-    app.use((0, helmet_1.default)());
+    app.use((0, helmet_1.default)({
+        crossOriginResourcePolicy: { policy: 'cross-origin' },
+    }));
     const allowedOrigins = process.env.CORS_ORIGINS
         ? process.env.CORS_ORIGINS.split(',')
         : ['http://localhost:5173'];

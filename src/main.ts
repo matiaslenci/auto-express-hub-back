@@ -13,7 +13,11 @@ async function bootstrap() {
   app.enableShutdownHooks();
 
   // Seguridad HTTP: headers de protección
-  app.use(helmet());
+  // crossOriginResourcePolicy: 'cross-origin' permite que el frontend cargue
+  // imágenes desde /uploads/ estando en un dominio/puerto diferente
+  app.use(helmet({
+    crossOriginResourcePolicy: { policy: 'cross-origin' },
+  }));
 
   // Configurar CORS con orígenes específicos
   const allowedOrigins = process.env.CORS_ORIGINS
