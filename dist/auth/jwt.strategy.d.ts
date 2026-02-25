@@ -11,6 +11,7 @@ export declare class JwtStrategy extends JwtStrategy_base {
     constructor(agencyRepository: Repository<Agency>, configService: ConfigService);
     validate(payload: {
         id: string;
+        username: string;
     }): Promise<Agency>;
 }
 export {};

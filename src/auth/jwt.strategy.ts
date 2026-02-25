@@ -16,7 +16,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   ) {
     const secret = configService.get<string>('JWT_SECRET');
     if (!secret) {
-      throw new Error('JWT_SECRET not found in configuration');
+      throw new Error('JWT_SECRET no encontrado en la configuración');
     }
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
@@ -24,12 +24,12 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     });
   }
 
-  async validate(payload: { id: string }): Promise<Agency> {
+  async validate(payload: { id: string; username: string }): Promise<Agency> {
     const { id } = payload;
     const agency = await this.agencyRepository.findOne({ where: { id } });
 
     if (!agency) {
-      throw new UnauthorizedException('User not found');
+      throw new UnauthorizedException('Usuario no encontrado');
     }
 
     return agency;

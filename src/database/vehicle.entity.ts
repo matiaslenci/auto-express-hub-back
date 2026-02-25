@@ -10,6 +10,17 @@ import {
 import { Agency } from './agency.entity';
 import { ApiProperty } from '@nestjs/swagger';
 
+export enum TipoMoneda {
+  ARS = 'ARS',
+  USD = 'USD',
+  CONSULTAR = 'CONSULTAR',
+}
+
+export enum TipoVehiculo {
+  AUTO = 'AUTO',
+  MOTO = 'MOTO',
+}
+
 @Entity('vehicles')
 export class Vehicle {
   @ApiProperty({
@@ -22,6 +33,14 @@ export class Vehicle {
   @ApiProperty({ description: 'The brand of the vehicle.', example: 'Toyota' })
   @Column({ type: 'varchar' })
   marca: string;
+
+  @ApiProperty({
+    description: 'Tipo de vehículo: AUTO o MOTO.',
+    enum: TipoVehiculo,
+    example: TipoVehiculo.AUTO,
+  })
+  @Column({ type: 'enum', enum: TipoVehiculo, default: TipoVehiculo.AUTO })
+  tipoVehiculo: TipoVehiculo;
 
   @ApiProperty({ description: 'The model of the vehicle.', example: 'Corolla' })
   @Column({ type: 'varchar' })
@@ -38,9 +57,18 @@ export class Vehicle {
     description: 'The price of the vehicle.',
     example: 25000.0,
     type: 'number',
+    nullable: true,
   })
-  @Column({ type: 'decimal', precision: 10, scale: 2 })
-  precio: number;
+  @Column({ type: 'decimal', precision: 10, scale: 2, nullable: true })
+  precio: number | null;
+
+  @ApiProperty({
+    description: 'Currency type of the price: ARS (pesos argentinos), USD (dólares), or CONSULTAR (price on request).',
+    enum: TipoMoneda,
+    example: TipoMoneda.USD,
+  })
+  @Column({ type: 'enum', enum: TipoMoneda, default: TipoMoneda.ARS })
+  moneda: TipoMoneda;
 
   @ApiProperty({ description: 'The type of the vehicle.', example: 'Sedán' })
   @Column({ type: 'varchar' })
@@ -78,6 +106,14 @@ export class Vehicle {
   })
   @Column({ type: 'text', nullable: true })
   descripcion: string;
+
+  @ApiProperty({
+    description: 'La localidad/ciudad donde se encuentra el vehículo.',
+    example: 'Santa Fe',
+    nullable: true,
+  })
+  @Column({ type: 'varchar', nullable: true })
+  localidad: string;
 
   @ApiProperty({
     description: 'An array of URLs for the vehicle’s photos.',

@@ -9,7 +9,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Agency = exports.Plan = void 0;
+exports.Agency = exports.PLAN_LIMITS = exports.Plan = void 0;
 const typeorm_1 = require("typeorm");
 const vehicle_entity_1 = require("./vehicle.entity");
 const swagger_1 = require("@nestjs/swagger");
@@ -19,6 +19,11 @@ var Plan;
     Plan["PROFESIONAL"] = "profesional";
     Plan["PREMIUM"] = "premium";
 })(Plan || (exports.Plan = Plan = {}));
+exports.PLAN_LIMITS = {
+    [Plan.BASICO]: 10,
+    [Plan.PROFESIONAL]: 50,
+    [Plan.PREMIUM]: -1,
+};
 let Agency = class Agency {
     id;
     username;
@@ -33,6 +38,8 @@ let Agency = class Agency {
     limitePublicaciones;
     createdAt;
     updatedAt;
+    isAdmin;
+    isActive;
     vehicles;
 };
 exports.Agency = Agency;
@@ -65,7 +72,7 @@ __decorate([
     __metadata("design:type", String)
 ], Agency.prototype, "email", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: 'varchar' }),
+    (0, typeorm_1.Column)({ type: 'varchar', select: false }),
     __metadata("design:type", String)
 ], Agency.prototype, "password", void 0);
 __decorate([
@@ -107,8 +114,9 @@ __decorate([
     (0, swagger_1.ApiProperty)({
         description: 'The WhatsApp number for the agency.',
         example: '+1234567890',
+        nullable: true,
     }),
-    (0, typeorm_1.Column)({ type: 'varchar' }),
+    (0, typeorm_1.Column)({ type: 'varchar', nullable: true }),
     __metadata("design:type", String)
 ], Agency.prototype, "whatsapp", void 0);
 __decorate([
@@ -151,6 +159,19 @@ __decorate([
     (0, typeorm_1.UpdateDateColumn)({ type: 'timestamptz', default: () => 'CURRENT_TIMESTAMP' }),
     __metadata("design:type", Date)
 ], Agency.prototype, "updatedAt", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ type: 'boolean', default: false }),
+    __metadata("design:type", Boolean)
+], Agency.prototype, "isAdmin", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({
+        description: 'Indicates if the agency is currently active (has paid for the month).',
+        example: true,
+        default: true,
+    }),
+    (0, typeorm_1.Column)({ type: 'boolean', default: true }),
+    __metadata("design:type", Boolean)
+], Agency.prototype, "isActive", void 0);
 __decorate([
     (0, typeorm_1.OneToMany)(() => vehicle_entity_1.Vehicle, (vehicle) => vehicle.agency),
     __metadata("design:type", Array)

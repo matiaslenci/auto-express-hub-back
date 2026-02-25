@@ -2,25 +2,42 @@ import {
   Injectable,
   NotFoundException,
   UnauthorizedException,
+  ForbiddenException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Vehicle } from 'src/database/vehicle.entity';
 import { CreateVehicleDto } from './dto/create-vehicle.dto';
 import { UpdateVehicleDto } from './dto/update-vehicle.dto';
-import { Agency } from 'src/database/agency.entity';
+import { Agency, PLAN_LIMITS } from 'src/database/agency.entity';
+import { AnalyticsService } from 'src/analytics/analytics.service';
 
 @Injectable()
 export class VehiclesService {
   constructor(
     @InjectRepository(Vehicle)
     private readonly vehicleRepository: Repository<Vehicle>,
-  ) {}
+    private readonly analyticsService: AnalyticsService,
+  ) { }
 
   async createVehicle(
     createVehicleDto: CreateVehicleDto,
     user: Agency,
   ): Promise<Vehicle> {
+    // Verificar límite de publicaciones según el plan
+    const currentVehicleCount = await this.vehicleRepository.count({
+      where: { agencyId: user.id },
+    });
+
+    const planLimit = PLAN_LIMITS[user.plan];
+
+    // Si el límite no es -1 (sin límite) y se ha alcanzado el máximo
+    if (planLimit !== -1 && currentVehicleCount >= planLimit) {
+      throw new ForbiddenException(
+        `Has alcanzado el límite de ${planLimit} publicaciones de tu plan ${user.plan}. Actualiza tu plan para publicar más vehículos.`
+      );
+    }
+
     const vehicle = this.vehicleRepository.create({
       ...createVehicleDto,
       agency: user,
@@ -38,7 +55,7 @@ export class VehiclesService {
   async getVehicleById(id: string): Promise<Vehicle> {
     const vehicle = await this.vehicleRepository.findOne({ where: { id } });
     if (!vehicle) {
-      throw new NotFoundException(`Vehicle with ID ${id} not found`);
+      throw new NotFoundException(`Vehículo con ID ${id} no encontrado`);
     }
     return vehicle;
   }
@@ -50,14 +67,14 @@ export class VehiclesService {
   ): Promise<Vehicle> {
     const vehicle = await this.getVehicleById(id);
     if (vehicle.agencyId !== user.id) {
-      throw new UnauthorizedException('You can only edit your own vehicles');
+      throw new UnauthorizedException('Solo puedes editar tus propios vehículos');
     }
     const updatedVehicle = await this.vehicleRepository.preload({
       id,
       ...updateVehicleDto,
     });
     if (!updatedVehicle) {
-      throw new NotFoundException(`Vehicle with ID ${id} not found`);
+      throw new NotFoundException(`Vehículo con ID ${id} no encontrado`);
     }
     return this.vehicleRepository.save(updatedVehicle);
   }
@@ -65,21 +82,23 @@ export class VehiclesService {
   async deleteVehicle(id: string, user: Agency): Promise<{ message: string }> {
     const vehicle = await this.getVehicleById(id);
     if (vehicle.agencyId !== user.id) {
-      throw new UnauthorizedException('You can only delete your own vehicles');
+      throw new UnauthorizedException('Solo puedes eliminar tus propios vehículos');
     }
     await this.vehicleRepository.delete(id);
-    return { message: 'Vehicle deleted successfully' };
+    return { message: 'Vehículo eliminado exitosamente' };
   }
 
   async incrementView(id: string): Promise<Vehicle> {
     const vehicle = await this.getVehicleById(id);
     vehicle.vistas += 1;
+    await this.analyticsService.registerView(id);
     return this.vehicleRepository.save(vehicle);
   }
 
   async incrementWhatsAppClick(id: string): Promise<Vehicle> {
     const vehicle = await this.getVehicleById(id);
     vehicle.clicksWhatsapp += 1;
+    await this.analyticsService.registerWhatsAppClick(id);
     return this.vehicleRepository.save(vehicle);
   }
 }

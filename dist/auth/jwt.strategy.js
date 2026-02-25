@@ -26,7 +26,7 @@ let JwtStrategy = class JwtStrategy extends (0, passport_1.PassportStrategy)(pas
     constructor(agencyRepository, configService) {
         const secret = configService.get('JWT_SECRET');
         if (!secret) {
-            throw new Error('JWT_SECRET not found in configuration');
+            throw new Error('JWT_SECRET no encontrado en la configuración');
         }
         super({
             jwtFromRequest: passport_jwt_1.ExtractJwt.fromAuthHeaderAsBearerToken(),
@@ -39,7 +39,7 @@ let JwtStrategy = class JwtStrategy extends (0, passport_1.PassportStrategy)(pas
         const { id } = payload;
         const agency = await this.agencyRepository.findOne({ where: { id } });
         if (!agency) {
-            throw new common_1.UnauthorizedException('User not found');
+            throw new common_1.UnauthorizedException('Usuario no encontrado');
         }
         return agency;
     }

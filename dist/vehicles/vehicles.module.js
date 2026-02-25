@@ -12,12 +12,13 @@ const vehicles_controller_1 = require("./vehicles.controller");
 const vehicles_service_1 = require("./vehicles.service");
 const database_module_1 = require("../database/database.module");
 const auth_module_1 = require("../auth/auth.module");
+const analytics_module_1 = require("../analytics/analytics.module");
 let VehiclesModule = class VehiclesModule {
 };
 exports.VehiclesModule = VehiclesModule;
 exports.VehiclesModule = VehiclesModule = __decorate([
     (0, common_1.Module)({
-        imports: [database_module_1.DatabaseModule, auth_module_1.AuthModule],
+        imports: [database_module_1.DatabaseModule, auth_module_1.AuthModule, analytics_module_1.AnalyticsModule],
         controllers: [vehicles_controller_1.VehiclesController],
         providers: [vehicles_service_1.VehiclesService],
     })

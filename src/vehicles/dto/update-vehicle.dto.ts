@@ -6,7 +6,9 @@ import {
   IsBoolean,
   IsArray,
   IsOptional,
+  IsEnum,
 } from 'class-validator';
+import { TipoMoneda, TipoVehiculo } from '../../database/vehicle.entity';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class UpdateVehicleDto {
@@ -15,16 +17,26 @@ export class UpdateVehicleDto {
     example: 'Toyota',
     required: false,
   })
-  @IsString()
+  @IsString({ message: 'La marca debe ser una cadena de texto' })
   @IsOptional()
   marca?: string;
+
+  @ApiProperty({
+    description: 'Tipo de vehículo: AUTO o MOTO.',
+    enum: TipoVehiculo,
+    example: TipoVehiculo.AUTO,
+    required: false,
+  })
+  @IsEnum(TipoVehiculo, { message: 'El tipo de vehículo debe ser un valor válido (AUTO o MOTO)' })
+  @IsOptional()
+  tipoVehiculo?: TipoVehiculo;
 
   @ApiProperty({
     description: 'The model of the vehicle.',
     example: 'Corolla',
     required: false,
   })
-  @IsString()
+  @IsString({ message: 'El modelo debe ser una cadena de texto' })
   @IsOptional()
   modelo?: string;
 
@@ -33,7 +45,7 @@ export class UpdateVehicleDto {
     example: 2022,
     required: false,
   })
-  @IsInt()
+  @IsInt({ message: 'El año debe ser un número entero' })
   @IsOptional()
   anio?: number;
 
@@ -42,16 +54,26 @@ export class UpdateVehicleDto {
     example: 25000.0,
     required: false,
   })
-  @IsNumber()
+  @IsNumber({}, { message: 'El precio debe ser un número' })
   @IsOptional()
   precio?: number;
+
+  @ApiProperty({
+    description: 'Currency type: ARS (pesos argentinos), USD (dólares), or CONSULTAR (price on request).',
+    enum: TipoMoneda,
+    example: TipoMoneda.USD,
+    required: false,
+  })
+  @IsEnum(TipoMoneda, { message: 'La moneda debe ser un valor válido' })
+  @IsOptional()
+  moneda?: TipoMoneda;
 
   @ApiProperty({
     description: 'The type of the vehicle.',
     example: 'Sedán',
     required: false,
   })
-  @IsString()
+  @IsString({ message: 'El tipo debe ser una cadena de texto' })
   @IsOptional()
   tipo?: string;
 
@@ -60,7 +82,7 @@ export class UpdateVehicleDto {
     example: 'Automática',
     required: false,
   })
-  @IsString()
+  @IsString({ message: 'La transmisión debe ser una cadena de texto' })
   @IsOptional()
   transmision?: string;
 
@@ -69,7 +91,7 @@ export class UpdateVehicleDto {
     example: 'Gasolina',
     required: false,
   })
-  @IsString()
+  @IsString({ message: 'El combustible debe ser una cadena de texto' })
   @IsOptional()
   combustible?: string;
 
@@ -78,7 +100,7 @@ export class UpdateVehicleDto {
     example: 15000,
     required: false,
   })
-  @IsInt()
+  @IsInt({ message: 'El kilometraje debe ser un número entero' })
   @IsOptional()
   kilometraje?: number;
 
@@ -87,7 +109,7 @@ export class UpdateVehicleDto {
     example: 'Rojo',
     required: false,
   })
-  @IsString()
+  @IsString({ message: 'El color debe ser una cadena de texto' })
   @IsOptional()
   color?: string;
 
@@ -96,9 +118,18 @@ export class UpdateVehicleDto {
     example: 'En excelente estado, único dueño.',
     required: false,
   })
-  @IsString()
+  @IsString({ message: 'La descripción debe ser una cadena de texto' })
   @IsOptional()
   descripcion?: string;
+
+  @ApiProperty({
+    description: 'La localidad/ciudad donde se encuentra el vehículo.',
+    example: 'Santa Fe',
+    required: false,
+  })
+  @IsString({ message: 'La localidad debe ser una cadena de texto' })
+  @IsOptional()
+  localidad?: string;
 
   @ApiProperty({
     description: 'An array of URLs for the vehicle’s photos.',
@@ -109,8 +140,8 @@ export class UpdateVehicleDto {
     ],
     required: false,
   })
-  @IsArray()
-  @IsString({ each: true })
+  @IsArray({ message: 'Las fotos deben ser un arreglo' })
+  @IsString({ each: true, message: 'Cada foto debe ser una URL (cadena de texto)' })
   @IsOptional()
   fotos?: string[];
 
@@ -118,7 +149,7 @@ export class UpdateVehicleDto {
     description: 'Indicates if the vehicle is available for sale.',
     required: false,
   })
-  @IsBoolean()
+  @IsBoolean({ message: 'Activo debe ser un valor booleano' })
   @IsOptional()
   activo?: boolean;
 }

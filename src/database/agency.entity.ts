@@ -17,6 +17,13 @@ export enum Plan {
   PREMIUM = 'premium',
 }
 
+// Límites de publicaciones por plan (-1 = sin límite)
+export const PLAN_LIMITS: Record<Plan, number> = {
+  [Plan.BASICO]: 10,
+  [Plan.PROFESIONAL]: 50,
+  [Plan.PREMIUM]: -1,
+};
+
 @Entity('agencies')
 export class Agency {
   @ApiProperty({
@@ -44,7 +51,7 @@ export class Agency {
   @Column({ type: 'varchar', unique: true })
   email: string;
 
-  @Column({ type: 'varchar' })
+  @Column({ type: 'varchar', select: false })
   password?: string;
 
   @ApiProperty({
@@ -81,9 +88,10 @@ export class Agency {
   @ApiProperty({
     description: 'The WhatsApp number for the agency.',
     example: '+1234567890',
+    nullable: true,
   })
-  @Column({ type: 'varchar' })
-  whatsapp: string;
+  @Column({ type: 'varchar', nullable: true })
+  whatsapp?: string;
 
   @ApiProperty({
     description: 'The subscription plan of the agency.',
@@ -120,6 +128,17 @@ export class Agency {
   })
   @UpdateDateColumn({ type: 'timestamptz', default: () => 'CURRENT_TIMESTAMP' })
   updatedAt: Date;
+
+  @Column({ type: 'boolean', default: false })
+  isAdmin: boolean;
+
+  @ApiProperty({
+    description: 'Indicates if the agency is currently active (has paid for the month).',
+    example: true,
+    default: true,
+  })
+  @Column({ type: 'boolean', default: true })
+  isActive: boolean;
 
   @OneToMany(() => Vehicle, (vehicle) => vehicle.agency)
   vehicles: Vehicle[];

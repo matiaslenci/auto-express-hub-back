@@ -2,7 +2,11 @@
 .git
 .github
 .vscode
+.agents
 node_modules
 dist
 .env
+uploads
 README.md
+fix-whatsapp-nullable.sql
+skills-lock.json

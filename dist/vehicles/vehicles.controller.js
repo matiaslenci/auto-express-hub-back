@@ -15,6 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.VehiclesController = void 0;
 const common_1 = require("@nestjs/common");
 const swagger_1 = require("@nestjs/swagger");
+const throttler_1 = require("@nestjs/throttler");
 const vehicles_service_1 = require("./vehicles.service");
 const create_vehicle_dto_1 = require("./dto/create-vehicle.dto");
 const update_vehicle_dto_1 = require("./dto/update-vehicle.dto");
@@ -135,6 +136,8 @@ __decorate([
 ], VehiclesController.prototype, "deleteVehicle", null);
 __decorate([
     (0, common_1.Post)(':id/view'),
+    (0, common_1.UseGuards)(throttler_1.ThrottlerGuard),
+    (0, throttler_1.Throttle)({ default: { limit: 5, ttl: 60000 } }),
     (0, common_1.HttpCode)(common_1.HttpStatus.OK),
     (0, swagger_1.ApiOperation)({ summary: 'Increment vehicle view count' }),
     (0, swagger_1.ApiResponse)({
@@ -149,6 +152,8 @@ __decorate([
 ], VehiclesController.prototype, "incrementView", null);
 __decorate([
     (0, common_1.Post)(':id/whatsapp'),
+    (0, common_1.UseGuards)(throttler_1.ThrottlerGuard),
+    (0, throttler_1.Throttle)({ default: { limit: 5, ttl: 60000 } }),
     (0, common_1.HttpCode)(common_1.HttpStatus.OK),
     (0, swagger_1.ApiOperation)({ summary: 'Increment vehicle WhatsApp click count' }),
     (0, swagger_1.ApiResponse)({

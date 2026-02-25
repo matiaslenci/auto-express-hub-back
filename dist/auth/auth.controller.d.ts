@@ -5,9 +5,11 @@ export declare class AuthController {
     private readonly authService;
     constructor(authService: AuthService);
     register(createAgencyDto: CreateAgencyDto): Promise<{
-        message: string;
+        access_token: string;
+        agency: Omit<import("../database/agency.entity").Agency, "password">;
     }>;
     login(loginDto: LoginDto): Promise<{
-        accessToken: string;
+        access_token: string;
+        agency: Omit<import("../database/agency.entity").Agency, "password">;
     }>;
 }

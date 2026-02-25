@@ -9,22 +9,36 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Vehicle = void 0;
+exports.Vehicle = exports.TipoVehiculo = exports.TipoMoneda = void 0;
 const typeorm_1 = require("typeorm");
 const agency_entity_1 = require("./agency.entity");
 const swagger_1 = require("@nestjs/swagger");
+var TipoMoneda;
+(function (TipoMoneda) {
+    TipoMoneda["ARS"] = "ARS";
+    TipoMoneda["USD"] = "USD";
+    TipoMoneda["CONSULTAR"] = "CONSULTAR";
+})(TipoMoneda || (exports.TipoMoneda = TipoMoneda = {}));
+var TipoVehiculo;
+(function (TipoVehiculo) {
+    TipoVehiculo["AUTO"] = "AUTO";
+    TipoVehiculo["MOTO"] = "MOTO";
+})(TipoVehiculo || (exports.TipoVehiculo = TipoVehiculo = {}));
 let Vehicle = class Vehicle {
     id;
     marca;
+    tipoVehiculo;
     modelo;
     anio;
     precio;
+    moneda;
     tipo;
     transmision;
     combustible;
     kilometraje;
     color;
     descripcion;
+    localidad;
     fotos;
     activo;
     vistas;
@@ -48,6 +62,15 @@ __decorate([
     __metadata("design:type", String)
 ], Vehicle.prototype, "marca", void 0);
 __decorate([
+    (0, swagger_1.ApiProperty)({
+        description: 'Tipo de vehículo: AUTO o MOTO.',
+        enum: TipoVehiculo,
+        example: TipoVehiculo.AUTO,
+    }),
+    (0, typeorm_1.Column)({ type: 'enum', enum: TipoVehiculo, default: TipoVehiculo.AUTO }),
+    __metadata("design:type", String)
+], Vehicle.prototype, "tipoVehiculo", void 0);
+__decorate([
     (0, swagger_1.ApiProperty)({ description: 'The model of the vehicle.', example: 'Corolla' }),
     (0, typeorm_1.Column)({ type: 'varchar' }),
     __metadata("design:type", String)
@@ -65,10 +88,20 @@ __decorate([
         description: 'The price of the vehicle.',
         example: 25000.0,
         type: 'number',
+        nullable: true,
     }),
-    (0, typeorm_1.Column)({ type: 'decimal', precision: 10, scale: 2 }),
-    __metadata("design:type", Number)
+    (0, typeorm_1.Column)({ type: 'decimal', precision: 10, scale: 2, nullable: true }),
+    __metadata("design:type", Object)
 ], Vehicle.prototype, "precio", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({
+        description: 'Currency type of the price: ARS (pesos argentinos), USD (dólares), or CONSULTAR (price on request).',
+        enum: TipoMoneda,
+        example: TipoMoneda.USD,
+    }),
+    (0, typeorm_1.Column)({ type: 'enum', enum: TipoMoneda, default: TipoMoneda.ARS }),
+    __metadata("design:type", String)
+], Vehicle.prototype, "moneda", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)({ description: 'The type of the vehicle.', example: 'Sedán' }),
     (0, typeorm_1.Column)({ type: 'varchar' }),
@@ -112,6 +145,15 @@ __decorate([
     (0, typeorm_1.Column)({ type: 'text', nullable: true }),
     __metadata("design:type", String)
 ], Vehicle.prototype, "descripcion", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({
+        description: 'La localidad/ciudad donde se encuentra el vehículo.',
+        example: 'Santa Fe',
+        nullable: true,
+    }),
+    (0, typeorm_1.Column)({ type: 'varchar', nullable: true }),
+    __metadata("design:type", String)
+], Vehicle.prototype, "localidad", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)({
         description: 'An array of URLs for the vehicle’s photos.',

@@ -22,8 +22,8 @@ __decorate([
         description: 'The email of the agency for login.',
         example: 'contact@autosdeluxe.com',
     }),
-    (0, class_validator_1.IsEmail)(),
-    (0, class_validator_1.IsNotEmpty)(),
+    (0, class_validator_1.IsEmail)({}, { message: 'El email debe ser un correo válido' }),
+    (0, class_validator_1.IsNotEmpty)({ message: 'El email es obligatorio' }),
     __metadata("design:type", String)
 ], LoginDto.prototype, "email", void 0);
 __decorate([
@@ -31,8 +31,8 @@ __decorate([
         description: 'The password for the agency account.',
         example: 'Securep@ss123',
     }),
-    (0, class_validator_1.IsString)(),
-    (0, class_validator_1.IsNotEmpty)(),
+    (0, class_validator_1.IsString)({ message: 'La contraseña debe ser una cadena de texto' }),
+    (0, class_validator_1.IsNotEmpty)({ message: 'La contraseña es obligatoria' }),
     __metadata("design:type", String)
 ], LoginDto.prototype, "password", void 0);
 //# sourceMappingURL=login.dto.js.map

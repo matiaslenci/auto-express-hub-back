@@ -17,12 +17,23 @@ const common_1 = require("@nestjs/common");
 const typeorm_1 = require("@nestjs/typeorm");
 const typeorm_2 = require("typeorm");
 const vehicle_entity_1 = require("../database/vehicle.entity");
+const agency_entity_1 = require("../database/agency.entity");
+const analytics_service_1 = require("../analytics/analytics.service");
 let VehiclesService = class VehiclesService {
     vehicleRepository;
-    constructor(vehicleRepository) {
+    analyticsService;
+    constructor(vehicleRepository, analyticsService) {
         this.vehicleRepository = vehicleRepository;
+        this.analyticsService = analyticsService;
     }
     async createVehicle(createVehicleDto, user) {
+        const currentVehicleCount = await this.vehicleRepository.count({
+            where: { agencyId: user.id },
+        });
+        const planLimit = agency_entity_1.PLAN_LIMITS[user.plan];
+        if (planLimit !== -1 && currentVehicleCount >= planLimit) {
+            throw new common_1.ForbiddenException(`Has alcanzado el límite de ${planLimit} publicaciones de tu plan ${user.plan}. Actualiza tu plan para publicar más vehículos.`);
+        }
         const vehicle = this.vehicleRepository.create({
             ...createVehicleDto,
             agency: user,
@@ -38,40 +49,42 @@ let VehiclesService = class VehiclesService {
     async getVehicleById(id) {
         const vehicle = await this.vehicleRepository.findOne({ where: { id } });
         if (!vehicle) {
-            throw new common_1.NotFoundException(`Vehicle with ID ${id} not found`);
+            throw new common_1.NotFoundException(`Vehículo con ID ${id} no encontrado`);
         }
         return vehicle;
     }
     async updateVehicle(id, updateVehicleDto, user) {
         const vehicle = await this.getVehicleById(id);
         if (vehicle.agencyId !== user.id) {
-            throw new common_1.UnauthorizedException('You can only edit your own vehicles');
+            throw new common_1.UnauthorizedException('Solo puedes editar tus propios vehículos');
         }
         const updatedVehicle = await this.vehicleRepository.preload({
             id,
             ...updateVehicleDto,
         });
         if (!updatedVehicle) {
-            throw new common_1.NotFoundException(`Vehicle with ID ${id} not found`);
+            throw new common_1.NotFoundException(`Vehículo con ID ${id} no encontrado`);
         }
         return this.vehicleRepository.save(updatedVehicle);
     }
     async deleteVehicle(id, user) {
         const vehicle = await this.getVehicleById(id);
         if (vehicle.agencyId !== user.id) {
-            throw new common_1.UnauthorizedException('You can only delete your own vehicles');
+            throw new common_1.UnauthorizedException('Solo puedes eliminar tus propios vehículos');
         }
         await this.vehicleRepository.delete(id);
-        return { message: 'Vehicle deleted successfully' };
+        return { message: 'Vehículo eliminado exitosamente' };
     }
     async incrementView(id) {
         const vehicle = await this.getVehicleById(id);
         vehicle.vistas += 1;
+        await this.analyticsService.registerView(id);
         return this.vehicleRepository.save(vehicle);
     }
     async incrementWhatsAppClick(id) {
         const vehicle = await this.getVehicleById(id);
         vehicle.clicksWhatsapp += 1;
+        await this.analyticsService.registerWhatsAppClick(id);
         return this.vehicleRepository.save(vehicle);
     }
 };
@@ -79,6 +92,7 @@ exports.VehiclesService = VehiclesService;
 exports.VehiclesService = VehiclesService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, typeorm_1.InjectRepository)(vehicle_entity_1.Vehicle)),
-    __metadata("design:paramtypes", [typeorm_2.Repository])
+    __metadata("design:paramtypes", [typeorm_2.Repository,
+        analytics_service_1.AnalyticsService])
 ], VehiclesService);
 //# sourceMappingURL=vehicles.service.js.map

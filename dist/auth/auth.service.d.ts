@@ -10,9 +10,11 @@ export declare class AuthService {
     private readonly configService;
     constructor(agencyRepository: Repository<Agency>, jwtService: JwtService, configService: ConfigService);
     register(createAgencyDto: CreateAgencyDto): Promise<{
-        message: string;
+        access_token: string;
+        agency: Omit<Agency, 'password'>;
     }>;
     login(loginDto: LoginDto): Promise<{
-        accessToken: string;
+        access_token: string;
+        agency: Omit<Agency, 'password'>;
     }>;
 }
