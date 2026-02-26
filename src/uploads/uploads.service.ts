@@ -73,7 +73,7 @@ export class UploadsService {
         }
 
         const baseUrl =
-            this.configService.get<string>('BASE_URL') || 'http://localhost:3000';
+            this.configService.get<string>('BASE_URL');
         const url = `${baseUrl}/uploads/${folder}/${filename}`;
 
         return { url, filename };
