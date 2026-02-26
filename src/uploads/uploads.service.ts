@@ -8,7 +8,7 @@ import { ConfigService } from '@nestjs/config';
 import sharp from 'sharp';
 import * as fs from 'fs';
 import * as path from 'path';
-import { v4 as uuidv4 } from 'uuid';
+import { randomUUID } from 'crypto';
 import {
     validateImageMagicBytes,
     MAX_OUTPUT_DIMENSION,
@@ -48,7 +48,7 @@ export class UploadsService {
             );
         }
 
-        const filename = `${uuidv4()}.webp`;
+        const filename = `${randomUUID()}.webp`;
         const filePath = path.join(this.uploadsPath, folder, filename);
 
         try {
