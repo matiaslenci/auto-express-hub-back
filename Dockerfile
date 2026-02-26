@@ -1,5 +1,5 @@
 # Stage 1: Build the application
-FROM node:18-alpine AS builder
+FROM node:20-alpine AS builder
 
 # Install bun
 RUN npm i -g bun
@@ -13,7 +13,7 @@ COPY . .
 RUN bun run build
 
 # Stage 2: Create the final image
-FROM node:18-alpine
+FROM node:20-alpine
 
 # Install bun
 RUN npm i -g bun
