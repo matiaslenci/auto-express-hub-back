@@ -33,6 +33,9 @@ let VehiclesController = class VehiclesController {
     async getVehicles(agencyId) {
         return this.vehiclesService.getVehicles(agencyId);
     }
+    async getMyVehicles(user) {
+        return this.vehiclesService.getVehicles(user.id);
+    }
     async getVehicleById(id) {
         return this.vehiclesService.getVehicleById(id);
     }
@@ -84,6 +87,21 @@ __decorate([
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], VehiclesController.prototype, "getVehicles", null);
+__decorate([
+    (0, common_1.Get)('my-vehicles'),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    (0, swagger_1.ApiBearerAuth)(),
+    (0, swagger_1.ApiOperation)({ summary: 'Get vehicles belonging to the authenticated agency' }),
+    (0, swagger_1.ApiResponse)({
+        status: 200,
+        description: 'Returns the vehicles of the authenticated agency.',
+    }),
+    (0, swagger_1.ApiResponse)({ status: 401, description: 'Unauthorized.' }),
+    __param(0, (0, get_user_decorator_1.GetUser)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [agency_entity_1.Agency]),
+    __metadata("design:returntype", Promise)
+], VehiclesController.prototype, "getMyVehicles", null);
 __decorate([
     (0, common_1.Get)(':id'),
     (0, swagger_1.ApiOperation)({ summary: 'Get a vehicle by ID' }),

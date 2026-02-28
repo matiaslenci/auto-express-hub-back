@@ -62,6 +62,19 @@ export class VehiclesController {
     return this.vehiclesService.getVehicles(agencyId);
   }
 
+  @Get('my-vehicles')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Get vehicles belonging to the authenticated agency' })
+  @ApiResponse({
+    status: 200,
+    description: 'Returns the vehicles of the authenticated agency.',
+  })
+  @ApiResponse({ status: 401, description: 'Unauthorized.' })
+  async getMyVehicles(@GetUser() user: Agency) {
+    return this.vehiclesService.getVehicles(user.id);
+  }
+
   @Get(':id')
   @ApiOperation({ summary: 'Get a vehicle by ID' })
   @ApiResponse({
