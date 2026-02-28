@@ -19,13 +19,16 @@ const typeorm_2 = require("typeorm");
 const vehicle_entity_1 = require("../database/vehicle.entity");
 const agency_entity_1 = require("../database/agency.entity");
 const analytics_service_1 = require("../analytics/analytics.service");
+const uploads_service_1 = require("../uploads/uploads.service");
 exports.MAX_VEHICLE_PHOTOS = 20;
 let VehiclesService = class VehiclesService {
     vehicleRepository;
     analyticsService;
-    constructor(vehicleRepository, analyticsService) {
+    uploadsService;
+    constructor(vehicleRepository, analyticsService, uploadsService) {
         this.vehicleRepository = vehicleRepository;
         this.analyticsService = analyticsService;
+        this.uploadsService = uploadsService;
     }
     async createVehicle(createVehicleDto, user) {
         const currentVehicleCount = await this.vehicleRepository.count({
@@ -72,7 +75,15 @@ let VehiclesService = class VehiclesService {
         if (!updatedVehicle) {
             throw new common_1.NotFoundException(`Vehículo con ID ${id} no encontrado`);
         }
-        return this.vehicleRepository.save(updatedVehicle);
+        const saved = await this.vehicleRepository.save(updatedVehicle);
+        if (updateVehicleDto.fotos) {
+            const newFotosSet = new Set(updateVehicleDto.fotos);
+            const removedFotos = vehicle.fotos.filter((url) => !newFotosSet.has(url));
+            if (removedFotos.length > 0) {
+                void this.uploadsService.deleteImages(removedFotos);
+            }
+        }
+        return saved;
     }
     async deleteVehicle(id, user) {
         const vehicle = await this.getVehicleById(id);
@@ -80,6 +91,9 @@ let VehiclesService = class VehiclesService {
             throw new common_1.UnauthorizedException('Solo puedes eliminar tus propios vehículos');
         }
         await this.vehicleRepository.delete(id);
+        if (vehicle.fotos?.length > 0) {
+            void this.uploadsService.deleteImages(vehicle.fotos);
+        }
         return { message: 'Vehículo eliminado exitosamente' };
     }
     async incrementView(id) {
@@ -100,6 +114,7 @@ exports.VehiclesService = VehiclesService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, typeorm_1.InjectRepository)(vehicle_entity_1.Vehicle)),
     __metadata("design:paramtypes", [typeorm_2.Repository,
-        analytics_service_1.AnalyticsService])
+        analytics_service_1.AnalyticsService,
+        uploads_service_1.UploadsService])
 ], VehiclesService);
 //# sourceMappingURL=vehicles.service.js.map

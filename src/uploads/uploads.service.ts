@@ -110,4 +110,39 @@ export class UploadsService {
             );
         }
     }
+    async deleteImages(urls: string[]): Promise<void> {
+        // Parallel deletion — Promise.allSettled never rejects so a missing file
+        // won't abort the remaining deletions or bubble up to the caller.
+        const results = await Promise.allSettled(
+            urls.map((url) => this.deleteImageByUrl(url)),
+        );
+        results.forEach((result, i) => {
+            if (result.status === 'rejected') {
+                console.warn(`[UploadsService] No se pudo eliminar la imagen ${urls[i]}:`, result.reason);
+            }
+        });
+    }
+
+    private async deleteImageByUrl(url: string): Promise<void> {
+        // URL format: <BASE_URL>/uploads/<folder>/<filename>
+        // We need to extract <folder> and <filename>
+        const uploadsSegment = '/uploads/';
+        const idx = url.indexOf(uploadsSegment);
+        if (idx === -1) {
+            console.warn(`[UploadsService] URL no reconocida, no se eliminará: ${url}`);
+            return;
+        }
+        const relative = url.slice(idx + uploadsSegment.length); // "vehicles/uuid.webp"
+        const parts = relative.split('/');
+        if (parts.length < 2) {
+            console.warn(`[UploadsService] Ruta de imagen inválida: ${url}`);
+            return;
+        }
+        const [folder, filename] = parts;
+        if (folder !== 'vehicles' && folder !== 'agencies') {
+            console.warn(`[UploadsService] Carpeta desconocida "${folder}" en URL: ${url}`);
+            return;
+        }
+        await this.deleteImage(folder as UploadFolder, filename);
+    }
 }

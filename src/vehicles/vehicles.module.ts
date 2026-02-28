@@ -4,9 +4,10 @@ import { VehiclesService } from './vehicles.service';
 import { DatabaseModule } from 'src/database/database.module';
 import { AuthModule } from 'src/auth/auth.module';
 import { AnalyticsModule } from 'src/analytics/analytics.module';
+import { UploadsModule } from 'src/uploads/uploads.module';
 
 @Module({
-  imports: [DatabaseModule, AuthModule, AnalyticsModule],
+  imports: [DatabaseModule, AuthModule, AnalyticsModule, UploadsModule],
   controllers: [VehiclesController],
   providers: [VehiclesService],
 })

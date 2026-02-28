@@ -12,7 +12,10 @@ services:
       DB_PASSWORD: admin
       DB_DATABASE: auto-express-hub
       JWT_SECRET: yourSecretKey
-      JWT_EXPIRES_IN: 3600s
+      JWT_EXPIRES_IN: 7d
+      CORS_ORIGINS: http://localhost:8080
+      BASE_URL: http://localhost:3001
+      NODE_ENV: development
     # The following command is for development, it will watch for changes and restart the server.
     # For production, remove the command and the volumes to run the built code from the container.
     command: >
@@ -20,6 +23,7 @@ services:
     volumes:
       - .:/usr/src/app
       - /usr/src/app/node_modules
+      - uploads_data:/usr/src/app/uploads
 
 
   db:
@@ -35,3 +39,4 @@ services:
 
 volumes:
   postgres_data:
+  uploads_data:

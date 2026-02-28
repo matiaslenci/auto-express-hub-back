@@ -13,6 +13,7 @@ import { CreateVehicleDto } from './dto/create-vehicle.dto';
 import { UpdateVehicleDto } from './dto/update-vehicle.dto';
 import { Agency, PLAN_LIMITS } from 'src/database/agency.entity';
 import { AnalyticsService } from 'src/analytics/analytics.service';
+import { UploadsService } from 'src/uploads/uploads.service';
 
 export const MAX_VEHICLE_PHOTOS = 20;
 
@@ -22,6 +23,7 @@ export class VehiclesService {
     @InjectRepository(Vehicle)
     private readonly vehicleRepository: Repository<Vehicle>,
     private readonly analyticsService: AnalyticsService,
+    private readonly uploadsService: UploadsService,
   ) { }
 
   async createVehicle(
@@ -95,7 +97,20 @@ export class VehiclesService {
     if (!updatedVehicle) {
       throw new NotFoundException(`Vehículo con ID ${id} no encontrado`);
     }
-    return this.vehicleRepository.save(updatedVehicle);
+    const saved = await this.vehicleRepository.save(updatedVehicle);
+
+    // Eliminar del disco las fotos que ya no están en el array actualizado.
+    // Se ejecuta DESPUÉS de guardar en BD: si falla el filesystem el dato ya
+    // está consistente. El borrado es fire-and-forget con logging de errores.
+    if (updateVehicleDto.fotos) {
+      const newFotosSet = new Set(updateVehicleDto.fotos);
+      const removedFotos = vehicle.fotos.filter((url) => !newFotosSet.has(url));
+      if (removedFotos.length > 0) {
+        void this.uploadsService.deleteImages(removedFotos);
+      }
+    }
+
+    return saved;
   }
 
   async deleteVehicle(id: string, user: Agency): Promise<{ message: string }> {
@@ -104,6 +119,12 @@ export class VehiclesService {
       throw new UnauthorizedException('Solo puedes eliminar tus propios vehículos');
     }
     await this.vehicleRepository.delete(id);
+
+    // Limpiar todas las fotos del vehículo del disco una vez eliminado de BD.
+    if (vehicle.fotos?.length > 0) {
+      void this.uploadsService.deleteImages(vehicle.fotos);
+    }
+
     return { message: 'Vehículo eliminado exitosamente' };
   }
 
