@@ -32,8 +32,7 @@ import { AdminModule } from './admin/admin.module';
         password: configService.get<string>('DB_PASSWORD'),
         database: configService.get<string>('DB_DATABASE'),
         entities: [Agency, Vehicle, VehicleAnalytics],
-        synchronize: true
-        // synchronize: configService.get('NODE_ENV') !== 'production', // Solo sincronizar en desarrollo
+        synchronize: configService.get('NODE_ENV') !== 'production', // Solo sincronizar en desarrollo
       }),
       inject: [ConfigService],
     }),
