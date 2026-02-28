@@ -15,11 +15,13 @@ const vehicle_entity_1 = require("./vehicle.entity");
 const swagger_1 = require("@nestjs/swagger");
 var Plan;
 (function (Plan) {
+    Plan["GRATUITO"] = "gratuito";
     Plan["BASICO"] = "basico";
     Plan["PROFESIONAL"] = "profesional";
     Plan["PREMIUM"] = "premium";
 })(Plan || (exports.Plan = Plan = {}));
 exports.PLAN_LIMITS = {
+    [Plan.GRATUITO]: 3,
     [Plan.BASICO]: 10,
     [Plan.PROFESIONAL]: 50,
     [Plan.PREMIUM]: -1,
@@ -123,12 +125,12 @@ __decorate([
     (0, swagger_1.ApiProperty)({
         description: 'The subscription plan of the agency.',
         enum: Plan,
-        default: Plan.BASICO,
+        default: Plan.GRATUITO,
     }),
     (0, typeorm_1.Column)({
         type: 'enum',
         enum: Plan,
-        default: Plan.BASICO,
+        default: Plan.GRATUITO,
     }),
     __metadata("design:type", String)
 ], Agency.prototype, "plan", void 0);

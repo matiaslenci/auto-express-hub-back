@@ -8,7 +8,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
-import { Agency } from 'src/database/agency.entity';
+import { Agency, Plan } from 'src/database/agency.entity';
 import { CreateAgencyDto } from './dto/create-agency.dto';
 import { LoginDto } from './dto/login.dto';
 import { ConfigService } from '@nestjs/config';
@@ -43,7 +43,7 @@ export class AuthService {
       email,
       password: hashedPassword,
       nombre,
-      plan,
+      plan: plan ?? Plan.GRATUITO,
     });
 
     const savedAgency = await this.agencyRepository.save(agency);

@@ -76,7 +76,7 @@ let AuthService = class AuthService {
             email,
             password: hashedPassword,
             nombre,
-            plan,
+            plan: plan ?? agency_entity_1.Plan.GRATUITO,
         });
         const savedAgency = await this.agencyRepository.save(agency);
         const payload = { id: savedAgency.id, username: savedAgency.username };

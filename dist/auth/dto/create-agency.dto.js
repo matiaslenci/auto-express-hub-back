@@ -25,10 +25,11 @@ __decorate([
     (0, swagger_1.ApiProperty)({
         description: 'The subscription plan of the agency.',
         enum: agency_entity_1.Plan,
-        example: agency_entity_1.Plan.BASICO,
+        default: agency_entity_1.Plan.GRATUITO,
+        required: false,
     }),
     (0, class_validator_1.IsEnum)(agency_entity_1.Plan, { message: 'El plan debe ser uno de los valores válidos' }),
-    (0, class_validator_1.IsNotEmpty)({ message: 'El plan es obligatorio' }),
+    (0, class_validator_1.IsOptional)(),
     __metadata("design:type", String)
 ], CreateAgencyDto.prototype, "plan", void 0);
 __decorate([

@@ -12,6 +12,7 @@ import { Vehicle } from './vehicle.entity';
 import { ApiProperty } from '@nestjs/swagger';
 
 export enum Plan {
+  GRATUITO = 'gratuito',
   BASICO = 'basico',
   PROFESIONAL = 'profesional',
   PREMIUM = 'premium',
@@ -19,6 +20,7 @@ export enum Plan {
 
 // Límites de publicaciones por plan (-1 = sin límite)
 export const PLAN_LIMITS: Record<Plan, number> = {
+  [Plan.GRATUITO]: 3,
   [Plan.BASICO]: 10,
   [Plan.PROFESIONAL]: 50,
   [Plan.PREMIUM]: -1,
@@ -96,12 +98,12 @@ export class Agency {
   @ApiProperty({
     description: 'The subscription plan of the agency.',
     enum: Plan,
-    default: Plan.BASICO,
+    default: Plan.GRATUITO,
   })
   @Column({
     type: 'enum',
     enum: Plan,
-    default: Plan.BASICO,
+    default: Plan.GRATUITO,
   })
   plan: Plan;
 

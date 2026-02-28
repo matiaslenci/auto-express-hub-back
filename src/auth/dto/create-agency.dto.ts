@@ -5,6 +5,7 @@ import {
   IsString,
   MinLength,
   IsEnum,
+  IsOptional,
   Matches,
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
@@ -14,11 +15,12 @@ export class CreateAgencyDto {
   @ApiProperty({
     description: 'The subscription plan of the agency.',
     enum: Plan,
-    example: Plan.BASICO,
+    default: Plan.GRATUITO,
+    required: false,
   })
   @IsEnum(Plan, { message: 'El plan debe ser uno de los valores válidos' })
-  @IsNotEmpty({ message: 'El plan es obligatorio' })
-  plan: Plan;
+  @IsOptional()
+  plan?: Plan;
 
   @ApiProperty({
     description: 'The display name of the agency.',

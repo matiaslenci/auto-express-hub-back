@@ -1,5 +1,6 @@
 import { Vehicle } from './vehicle.entity';
 export declare enum Plan {
+    GRATUITO = "gratuito",
     BASICO = "basico",
     PROFESIONAL = "profesional",
     PREMIUM = "premium"
