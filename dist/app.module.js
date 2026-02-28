@@ -44,7 +44,7 @@ exports.AppModule = AppModule = __decorate([
                     password: configService.get('DB_PASSWORD'),
                     database: configService.get('DB_DATABASE'),
                     entities: [agency_entity_1.Agency, vehicle_entity_1.Vehicle, vehicle_analytics_entity_1.VehicleAnalytics],
-                    synchronize: configService.get('NODE_ENV') !== 'production',
+                    synchronize: true
                 }),
                 inject: [config_1.ConfigService],
             }),
