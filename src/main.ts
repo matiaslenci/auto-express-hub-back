@@ -20,9 +20,7 @@ async function bootstrap() {
   }));
 
   // Configurar CORS con orígenes específicos
-  const allowedOrigins = process.env.CORS_ORIGINS
-    ? process.env.CORS_ORIGINS.split(',')
-    : ['http://localhost:5173'];
+  const allowedOrigins = (process.env.CORS_ORIGINS ?? '').split(',').filter(Boolean);
   app.enableCors({
     origin: allowedOrigins,
     methods: ['GET', 'POST', 'PATCH', 'DELETE'],

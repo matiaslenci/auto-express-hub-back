@@ -15,9 +15,7 @@ async function bootstrap() {
     app.use((0, helmet_1.default)({
         crossOriginResourcePolicy: { policy: 'cross-origin' },
     }));
-    const allowedOrigins = process.env.CORS_ORIGINS
-        ? process.env.CORS_ORIGINS.split(',')
-        : ['http://localhost:5173'];
+    const allowedOrigins = (process.env.CORS_ORIGINS ?? '').split(',').filter(Boolean);
     app.enableCors({
         origin: allowedOrigins,
         methods: ['GET', 'POST', 'PATCH', 'DELETE'],
