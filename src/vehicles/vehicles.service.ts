@@ -3,7 +3,9 @@ import {
   NotFoundException,
   UnauthorizedException,
   ForbiddenException,
+  BadRequestException,
 } from '@nestjs/common';
+
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Vehicle } from 'src/database/vehicle.entity';
@@ -11,6 +13,8 @@ import { CreateVehicleDto } from './dto/create-vehicle.dto';
 import { UpdateVehicleDto } from './dto/update-vehicle.dto';
 import { Agency, PLAN_LIMITS } from 'src/database/agency.entity';
 import { AnalyticsService } from 'src/analytics/analytics.service';
+
+export const MAX_VEHICLE_PHOTOS = 20;
 
 @Injectable()
 export class VehiclesService {
@@ -35,6 +39,13 @@ export class VehiclesService {
     if (planLimit !== -1 && currentVehicleCount >= planLimit) {
       throw new ForbiddenException(
         `Has alcanzado el límite de ${planLimit} publicaciones de tu plan ${user.plan}. Actualiza tu plan para publicar más vehículos.`
+      );
+    }
+
+    // Validar límite de fotos al crear
+    if (createVehicleDto.fotos && createVehicleDto.fotos.length > MAX_VEHICLE_PHOTOS) {
+      throw new BadRequestException(
+        `Un vehículo no puede tener más de ${MAX_VEHICLE_PHOTOS} fotos.`,
       );
     }
 
@@ -69,6 +80,14 @@ export class VehiclesService {
     if (vehicle.agencyId !== user.id) {
       throw new UnauthorizedException('Solo puedes editar tus propios vehículos');
     }
+
+    // Validar límite de fotos al actualizar
+    if (updateVehicleDto.fotos && updateVehicleDto.fotos.length > MAX_VEHICLE_PHOTOS) {
+      throw new BadRequestException(
+        `Un vehículo no puede tener más de ${MAX_VEHICLE_PHOTOS} fotos.`,
+      );
+    }
+
     const updatedVehicle = await this.vehicleRepository.preload({
       id,
       ...updateVehicleDto,

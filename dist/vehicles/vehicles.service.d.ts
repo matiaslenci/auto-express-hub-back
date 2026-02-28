@@ -4,6 +4,7 @@ import { CreateVehicleDto } from './dto/create-vehicle.dto';
 import { UpdateVehicleDto } from './dto/update-vehicle.dto';
 import { Agency } from 'src/database/agency.entity';
 import { AnalyticsService } from 'src/analytics/analytics.service';
+export declare const MAX_VEHICLE_PHOTOS = 20;
 export declare class VehiclesService {
     private readonly vehicleRepository;
     private readonly analyticsService;

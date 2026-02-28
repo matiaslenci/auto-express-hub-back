@@ -12,13 +12,14 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.VehiclesService = void 0;
+exports.VehiclesService = exports.MAX_VEHICLE_PHOTOS = void 0;
 const common_1 = require("@nestjs/common");
 const typeorm_1 = require("@nestjs/typeorm");
 const typeorm_2 = require("typeorm");
 const vehicle_entity_1 = require("../database/vehicle.entity");
 const agency_entity_1 = require("../database/agency.entity");
 const analytics_service_1 = require("../analytics/analytics.service");
+exports.MAX_VEHICLE_PHOTOS = 20;
 let VehiclesService = class VehiclesService {
     vehicleRepository;
     analyticsService;
@@ -33,6 +34,9 @@ let VehiclesService = class VehiclesService {
         const planLimit = agency_entity_1.PLAN_LIMITS[user.plan];
         if (planLimit !== -1 && currentVehicleCount >= planLimit) {
             throw new common_1.ForbiddenException(`Has alcanzado el límite de ${planLimit} publicaciones de tu plan ${user.plan}. Actualiza tu plan para publicar más vehículos.`);
+        }
+        if (createVehicleDto.fotos && createVehicleDto.fotos.length > exports.MAX_VEHICLE_PHOTOS) {
+            throw new common_1.BadRequestException(`Un vehículo no puede tener más de ${exports.MAX_VEHICLE_PHOTOS} fotos.`);
         }
         const vehicle = this.vehicleRepository.create({
             ...createVehicleDto,
@@ -57,6 +61,9 @@ let VehiclesService = class VehiclesService {
         const vehicle = await this.getVehicleById(id);
         if (vehicle.agencyId !== user.id) {
             throw new common_1.UnauthorizedException('Solo puedes editar tus propios vehículos');
+        }
+        if (updateVehicleDto.fotos && updateVehicleDto.fotos.length > exports.MAX_VEHICLE_PHOTOS) {
+            throw new common_1.BadRequestException(`Un vehículo no puede tener más de ${exports.MAX_VEHICLE_PHOTOS} fotos.`);
         }
         const updatedVehicle = await this.vehicleRepository.preload({
             id,
