@@ -53,6 +53,31 @@ let VehiclesService = class VehiclesService {
         }
         return this.vehicleRepository.find();
     }
+    async getVehiclesByUsername(username) {
+        return this.vehicleRepository.createQueryBuilder('vehicle')
+            .innerJoin('vehicle.agency', 'agency')
+            .where('agency.username = :username', { username })
+            .select([
+            'vehicle.id',
+            'vehicle.marca',
+            'vehicle.tipoVehiculo',
+            'vehicle.modelo',
+            'vehicle.anio',
+            'vehicle.precio',
+            'vehicle.moneda',
+            'vehicle.tipo',
+            'vehicle.transmision',
+            'vehicle.combustible',
+            'vehicle.kilometraje',
+            'vehicle.color',
+            'vehicle.descripcion',
+            'vehicle.localidad',
+            'vehicle.fotos',
+            'vehicle.createdAt',
+            'vehicle.agencyId',
+        ])
+            .getMany();
+    }
     async getVehicleById(id) {
         const vehicle = await this.vehicleRepository.findOne({ where: { id } });
         if (!vehicle) {

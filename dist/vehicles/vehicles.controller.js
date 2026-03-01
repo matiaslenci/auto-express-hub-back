@@ -34,11 +34,12 @@ let VehiclesController = class VehiclesController {
         return this.vehiclesService.getVehicles(agencyId);
     }
     async getMyVehicles(user) {
-        console.log('ENTRO A MY VEHICLES');
         return this.vehiclesService.getVehicles(user.id);
     }
+    async getVehiclesByUsername(username) {
+        return this.vehiclesService.getVehiclesByUsername(username);
+    }
     async getVehicleById(id) {
-        console.log('ENTRO A GET BY ID:', id);
         return this.vehiclesService.getVehicleById(id);
     }
     async updateVehicle(id, updateVehicleDto, user) {
@@ -104,6 +105,18 @@ __decorate([
     __metadata("design:paramtypes", [agency_entity_1.Agency]),
     __metadata("design:returntype", Promise)
 ], VehiclesController.prototype, "getMyVehicles", null);
+__decorate([
+    (0, common_1.Get)('user/:username'),
+    (0, swagger_1.ApiOperation)({ summary: 'Get vehicles belonging to a specific user by username' }),
+    (0, swagger_1.ApiResponse)({
+        status: 200,
+        description: 'Returns the vehicles of the specified user.',
+    }),
+    __param(0, (0, common_1.Param)('username')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], VehiclesController.prototype, "getVehiclesByUsername", null);
 __decorate([
     (0, common_1.Get)(':id'),
     (0, swagger_1.ApiOperation)({ summary: 'Get a vehicle by ID' }),

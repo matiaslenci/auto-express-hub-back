@@ -8,6 +8,7 @@ export declare class VehiclesController {
     createVehicle(createVehicleDto: CreateVehicleDto, user: Agency): Promise<import("../database/vehicle.entity").Vehicle>;
     getVehicles(agencyId?: string): Promise<import("../database/vehicle.entity").Vehicle[]>;
     getMyVehicles(user: Agency): Promise<import("../database/vehicle.entity").Vehicle[]>;
+    getVehiclesByUsername(username: string): Promise<import("../database/vehicle.entity").Vehicle[]>;
     getVehicleById(id: string): Promise<import("../database/vehicle.entity").Vehicle>;
     updateVehicle(id: string, updateVehicleDto: UpdateVehicleDto, user: Agency): Promise<import("../database/vehicle.entity").Vehicle>;
     deleteVehicle(id: string, user: Agency): Promise<{

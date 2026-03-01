@@ -13,6 +13,7 @@ export declare class VehiclesService {
     constructor(vehicleRepository: Repository<Vehicle>, analyticsService: AnalyticsService, uploadsService: UploadsService);
     createVehicle(createVehicleDto: CreateVehicleDto, user: Agency): Promise<Vehicle>;
     getVehicles(agencyId?: string): Promise<Vehicle[]>;
+    getVehiclesByUsername(username: string): Promise<Vehicle[]>;
     getVehicleById(id: string): Promise<Vehicle>;
     updateVehicle(id: string, updateVehicleDto: UpdateVehicleDto, user: Agency): Promise<Vehicle>;
     deleteVehicle(id: string, user: Agency): Promise<{

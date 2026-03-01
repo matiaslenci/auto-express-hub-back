@@ -73,8 +73,17 @@ export class VehiclesController {
   })
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
   async getMyVehicles(@GetUser() user: Agency) {
-    console.log('ENTRO A MY VEHICLES');
     return this.vehiclesService.getVehicles(user.id);
+  }
+
+  @Get('user/:username')
+  @ApiOperation({ summary: 'Get vehicles belonging to a specific user by username' })
+  @ApiResponse({
+    status: 200,
+    description: 'Returns the vehicles of the specified user.',
+  })
+  async getVehiclesByUsername(@Param('username') username: string) {
+    return this.vehiclesService.getVehiclesByUsername(username);
   }
 
   @Get(':id')
@@ -85,7 +94,6 @@ export class VehiclesController {
   })
   @ApiResponse({ status: 404, description: 'Vehicle not found.' })
   async getVehicleById(@Param('id', new ParseUUIDPipe({ version: '4' })) id: string) {
-    console.log('ENTRO A GET BY ID:', id);
     return this.vehiclesService.getVehicleById(id);
   }
 
