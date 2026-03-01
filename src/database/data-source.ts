@@ -5,7 +5,7 @@ import { join } from 'path';
 // Cargar variables de entorno desde el archivo .env si existe
 config({ path: join(__dirname, '../../.env') });
 
-export const AppDataSource = new DataSource({
+export default new DataSource({
     type: 'postgres',
     host: process.env.DB_HOST || 'localhost',
     port: parseInt(process.env.DB_PORT || '5432', 10),
