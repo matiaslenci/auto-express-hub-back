@@ -34,9 +34,11 @@ let VehiclesController = class VehiclesController {
         return this.vehiclesService.getVehicles(agencyId);
     }
     async getMyVehicles(user) {
+        console.log('ENTRO A MY VEHICLES');
         return this.vehiclesService.getVehicles(user.id);
     }
     async getVehicleById(id) {
+        console.log('ENTRO A GET BY ID:', id);
         return this.vehiclesService.getVehicleById(id);
     }
     async updateVehicle(id, updateVehicleDto, user) {
@@ -110,7 +112,7 @@ __decorate([
         description: 'Returns the vehicle data.',
     }),
     (0, swagger_1.ApiResponse)({ status: 404, description: 'Vehicle not found.' }),
-    __param(0, (0, common_1.Param)('id', common_1.ParseUUIDPipe)),
+    __param(0, (0, common_1.Param)('id', new common_1.ParseUUIDPipe({ version: '4' }))),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
