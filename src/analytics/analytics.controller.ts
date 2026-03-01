@@ -9,6 +9,7 @@ import {
     HttpCode,
     HttpStatus,
     ParseIntPipe,
+    ParseUUIDPipe,
 } from '@nestjs/common';
 import {
     ApiTags,
@@ -34,7 +35,7 @@ export class AnalyticsController {
     @HttpCode(HttpStatus.OK)
     @ApiOperation({ summary: 'Register a vehicle view' })
     @ApiResponse({ status: 200, description: 'View registered successfully.' })
-    async registerView(@Param('id') id: string) {
+    async registerView(@Param('id', ParseUUIDPipe) id: string) {
         return this.analyticsService.registerView(id);
     }
 
@@ -44,7 +45,7 @@ export class AnalyticsController {
     @HttpCode(HttpStatus.OK)
     @ApiOperation({ summary: 'Register a WhatsApp click' })
     @ApiResponse({ status: 200, description: 'Click registered successfully.' })
-    async registerWhatsAppClick(@Param('id') id: string) {
+    async registerWhatsAppClick(@Param('id', ParseUUIDPipe) id: string) {
         return this.analyticsService.registerWhatsAppClick(id);
     }
 
@@ -64,7 +65,7 @@ export class AnalyticsController {
     @ApiQuery({ name: 'days', required: false, type: Number })
     @ApiResponse({ status: 200, description: 'Returns vehicle stats.' })
     async getVehicleStats(
-        @Param('id') id: string,
+        @Param('id', ParseUUIDPipe) id: string,
         @Query('days', new ParseIntPipe({ optional: true })) days?: number,
     ) {
         return this.analyticsService.getVehicleStats(id, days || 30);

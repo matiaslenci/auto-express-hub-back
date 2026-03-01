@@ -1,4 +1,4 @@
-import { Controller, Get, Patch, Param, Body, UseGuards } from '@nestjs/common';
+import { Controller, Get, Patch, Param, Body, UseGuards, ParseUUIDPipe } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
 import { AdminService } from './admin.service';
 import { UpdateAgencyStatusDto } from './dto/update-agency-status.dto';
@@ -27,7 +27,7 @@ export class AdminController {
     @ApiResponse({ status: 200, description: 'Agency status updated successfully.' })
     @ApiResponse({ status: 404, description: 'Agency not found.' })
     async updateAgencyStatus(
-        @Param('id') id: string,
+        @Param('id', ParseUUIDPipe) id: string,
         @Body() updateAgencyStatusDto: UpdateAgencyStatusDto,
     ) {
         return this.adminService.updateAgencyStatus(id, updateAgencyStatusDto);
@@ -38,7 +38,7 @@ export class AdminController {
     @ApiResponse({ status: 200, description: 'Agency plan updated successfully.' })
     @ApiResponse({ status: 404, description: 'Agency not found.' })
     async updateAgencyPlan(
-        @Param('id') id: string,
+        @Param('id', ParseUUIDPipe) id: string,
         @Body() updateAgencyPlanDto: UpdateAgencyPlanDto,
     ) {
         return this.adminService.updateAgencyPlan(id, updateAgencyPlanDto);

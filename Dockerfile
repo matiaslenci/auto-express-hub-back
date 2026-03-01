@@ -15,8 +15,6 @@ RUN bun run build
 # Stage 2: Create the final image
 FROM node:20-alpine
 
-RUN echo "DEPLOY TEST 28-02-2026"
-
 # Install bun
 RUN npm i -g bun
 

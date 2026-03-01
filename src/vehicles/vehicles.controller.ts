@@ -10,6 +10,7 @@ import {
   UseGuards,
   HttpCode,
   HttpStatus,
+  ParseUUIDPipe,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -82,7 +83,7 @@ export class VehiclesController {
     description: 'Returns the vehicle data.',
   })
   @ApiResponse({ status: 404, description: 'Vehicle not found.' })
-  async getVehicleById(@Param('id') id: string) {
+  async getVehicleById(@Param('id', ParseUUIDPipe) id: string) {
     return this.vehiclesService.getVehicleById(id);
   }
 
@@ -97,7 +98,7 @@ export class VehiclesController {
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
   @ApiResponse({ status: 404, description: 'Vehicle not found.' })
   async updateVehicle(
-    @Param('id') id: string,
+    @Param('id', ParseUUIDPipe) id: string,
     @Body() updateVehicleDto: UpdateVehicleDto,
     @GetUser() user: Agency,
   ) {
@@ -115,7 +116,7 @@ export class VehiclesController {
   })
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
   @ApiResponse({ status: 404, description: 'Vehicle not found.' })
-  async deleteVehicle(@Param('id') id: string, @GetUser() user: Agency) {
+  async deleteVehicle(@Param('id', ParseUUIDPipe) id: string, @GetUser() user: Agency) {
     return this.vehiclesService.deleteVehicle(id, user);
   }
 
@@ -129,7 +130,7 @@ export class VehiclesController {
     description: 'The view count has been successfully incremented.',
   })
   @ApiResponse({ status: 404, description: 'Vehicle not found.' })
-  async incrementView(@Param('id') id: string) {
+  async incrementView(@Param('id', ParseUUIDPipe) id: string) {
     return this.vehiclesService.incrementView(id);
   }
 
@@ -144,7 +145,7 @@ export class VehiclesController {
       'The WhatsApp click count has been successfully incremented.',
   })
   @ApiResponse({ status: 404, description: 'Vehicle not found.' })
-  async incrementWhatsAppClick(@Param('id') id: string) {
+  async incrementWhatsAppClick(@Param('id', ParseUUIDPipe) id: string) {
     return this.vehiclesService.incrementWhatsAppClick(id);
   }
 }
