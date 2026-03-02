@@ -126,15 +126,13 @@ let VehiclesService = class VehiclesService {
     }
     async incrementView(id) {
         const vehicle = await this.getVehicleById(id);
-        vehicle.vistas += 1;
-        await this.analyticsService.registerView(id);
-        return this.vehicleRepository.save(vehicle);
+        await this.analyticsService.registerView(vehicle.id);
+        return this.getVehicleById(id);
     }
     async incrementWhatsAppClick(id) {
         const vehicle = await this.getVehicleById(id);
-        vehicle.clicksWhatsapp += 1;
-        await this.analyticsService.registerWhatsAppClick(id);
-        return this.vehicleRepository.save(vehicle);
+        await this.analyticsService.registerWhatsAppClick(vehicle.id);
+        return this.getVehicleById(id);
     }
 };
 exports.VehiclesService = VehiclesService;
