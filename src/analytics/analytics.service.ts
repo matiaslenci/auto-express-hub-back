@@ -32,6 +32,9 @@ export class AnalyticsService {
         }
 
         await this.analyticsRepository.save(analytics);
+
+        // Also update the total views counter on the Vehicle entity itself
+        await this.vehicleRepository.increment({ id: vehicleId }, 'vistas', 1);
     }
 
     async registerWhatsAppClick(vehicleId: string): Promise<void> {
@@ -51,6 +54,9 @@ export class AnalyticsService {
         }
 
         await this.analyticsRepository.save(analytics);
+
+        // Also update the total clicks counter on the Vehicle entity itself
+        await this.vehicleRepository.increment({ id: vehicleId }, 'clicksWhatsapp', 1);
     }
 
     async getAgencySummary(agencyId: string) {
