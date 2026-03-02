@@ -74,6 +74,9 @@ let VehiclesService = class VehiclesService {
             'vehicle.localidad',
             'vehicle.fotos',
             'vehicle.createdAt',
+            'vehicle.clicksWhatsapp',
+            'vehicle.vistas',
+            'vehicle.activo',
             'vehicle.agencyId',
         ])
             .getMany();
