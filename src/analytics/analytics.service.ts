@@ -4,7 +4,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, Between } from 'typeorm';
 import { VehicleAnalytics } from '../database/vehicle-analytics.entity';
 import { Vehicle } from '../database/vehicle.entity';
-import { Agency } from '../database/agency.entity';
 
 @Injectable()
 export class AnalyticsService {
@@ -37,7 +36,7 @@ export class AnalyticsService {
         await this.vehicleRepository
             .createQueryBuilder()
             .update(Vehicle)
-            .set({ vistas: () => 'vistas + 1' })
+            .set({ vistas: () => '"vistas" + 1' })
             .where('id = :id', { id: vehicleId })
             .execute();
     }
@@ -70,12 +69,32 @@ export class AnalyticsService {
     }
 
     async getAgencySummary(agencyId: string) {
-        const vehicles = await this.vehicleRepository.find({
-            where: { agencyId },
-            select: ['id', 'marca', 'modelo', 'vistas', 'clicksWhatsapp'],
-            order: { vistas: 'DESC' },
-            take: 5,
-        });
+        // Compute per-vehicle views and clicks from analytics table (source of truth)
+        // instead of relying on the denormalized counters on the vehicles table,
+        // which may not be updated reliably in production.
+        const topVehiclesRaw = await this.analyticsRepository
+            .createQueryBuilder('analytics')
+            .innerJoin('analytics.vehicle', 'vehicle')
+            .where('vehicle.agencyId = :agencyId', { agencyId })
+            .select('vehicle.id', 'id')
+            .addSelect('vehicle.marca', 'marca')
+            .addSelect('vehicle.modelo', 'modelo')
+            .addSelect('SUM(analytics.viewsCount)', 'vistas')
+            .addSelect('SUM(analytics.clicksCount)', 'clicksWhatsapp')
+            .groupBy('vehicle.id')
+            .addGroupBy('vehicle.marca')
+            .addGroupBy('vehicle.modelo')
+            .orderBy('SUM(analytics.viewsCount)', 'DESC')
+            .limit(5)
+            .getRawMany();
+
+        const topVehicles = topVehiclesRaw.map(v => ({
+            id: v.id,
+            marca: v.marca,
+            modelo: v.modelo,
+            vistas: parseInt(v.vistas) || 0,
+            clicksWhatsapp: parseInt(v.clicksWhatsapp) || 0,
+        }));
 
         const stats = await this.analyticsRepository
             .createQueryBuilder('analytics')
@@ -112,7 +131,7 @@ export class AnalyticsService {
         const conversionRate = totalViews > 0 ? (totalClicks / totalViews) * 100 : 0;
 
         return {
-            topVehicles: vehicles,
+            topVehicles,
             totalViews,
             totalClicks,
             conversionRate: parseFloat(conversionRate.toFixed(2)),
