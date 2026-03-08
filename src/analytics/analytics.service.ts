@@ -1,5 +1,5 @@
 
-import { Injectable, Logger, NotFoundException } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, Between } from 'typeorm';
 import { VehicleAnalytics } from '../database/vehicle-analytics.entity';
@@ -18,58 +18,40 @@ export class AnalyticsService {
 
     async registerView(vehicleId: string): Promise<void> {
         const date = new Date().toISOString().split('T')[0];
-        let analytics = await this.analyticsRepository.findOne({
-            where: { vehicleId, date: date as any },
-        });
 
-        if (!analytics) {
-            analytics = this.analyticsRepository.create({
-                vehicleId,
-                date: date as any,
-                viewsCount: 1,
-            });
-        } else {
-            analytics.viewsCount += 1;
-        }
+        // Atomic upsert: insert new row or increment existing viewsCount
+        await this.analyticsRepository.query(
+            `INSERT INTO "vehicle_analytics" ("vehicleId", "date", "viewsCount", "clicksCount")
+             VALUES ($1, $2, 1, 0)
+             ON CONFLICT ("vehicleId", "date")
+             DO UPDATE SET "viewsCount" = "vehicle_analytics"."viewsCount" + 1`,
+            [vehicleId, date],
+        );
 
-        await this.analyticsRepository.save(analytics);
-
-        // Also update the total views counter on the Vehicle entity itself
-        const result = await this.vehicleRepository.query(
+        // Also update the denormalized views counter on the Vehicle entity
+        await this.vehicleRepository.query(
             'UPDATE "vehicles" SET "vistas" = "vistas" + 1 WHERE "id" = $1',
             [vehicleId],
         );
-        if (result[1] === 0) {
-            this.logger.warn(`No vehicle row updated for vistas increment, vehicleId=${vehicleId}`);
-        }
     }
 
     async registerWhatsAppClick(vehicleId: string): Promise<void> {
         const date = new Date().toISOString().split('T')[0];
-        let analytics = await this.analyticsRepository.findOne({
-            where: { vehicleId, date: date as any },
-        });
 
-        if (!analytics) {
-            analytics = this.analyticsRepository.create({
-                vehicleId,
-                date: date as any,
-                clicksCount: 1,
-            });
-        } else {
-            analytics.clicksCount += 1;
-        }
+        // Atomic upsert: insert new row or increment existing clicksCount
+        await this.analyticsRepository.query(
+            `INSERT INTO "vehicle_analytics" ("vehicleId", "date", "viewsCount", "clicksCount")
+             VALUES ($1, $2, 0, 1)
+             ON CONFLICT ("vehicleId", "date")
+             DO UPDATE SET "clicksCount" = "vehicle_analytics"."clicksCount" + 1`,
+            [vehicleId, date],
+        );
 
-        await this.analyticsRepository.save(analytics);
-
-        // Also update the total clicks counter on the Vehicle entity itself
-        const result = await this.vehicleRepository.query(
+        // Also update the denormalized clicks counter on the Vehicle entity
+        await this.vehicleRepository.query(
             'UPDATE "vehicles" SET "clicksWhatsapp" = "clicksWhatsapp" + 1 WHERE "id" = $1',
             [vehicleId],
         );
-        if (result[1] === 0) {
-            this.logger.warn(`No vehicle row updated for clicksWhatsapp increment, vehicleId=${vehicleId}`);
-        }
     }
 
     async getAgencySummary(agencyId: string) {
