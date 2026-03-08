@@ -1,6 +1,5 @@
 import {
     Injectable,
-    NotFoundException,
     BadRequestException,
     InternalServerErrorException,
 } from '@nestjs/common';
@@ -99,7 +98,8 @@ export class UploadsService {
         }
 
         if (!fs.existsSync(filePath)) {
-            throw new NotFoundException('Imagen no encontrada.');
+            console.warn(`[UploadsService] Archivo ya no existe, omitiendo eliminación: ${safeName}`);
+            return;
         }
 
         try {
