@@ -101,13 +101,12 @@ export class UploadsService {
             console.warn(`[UploadsService] Archivo ya no existe, omitiendo eliminación: ${safeName}`);
             return;
         }
-
         try {
             fs.unlinkSync(filePath);
-        } catch (error) {
-            throw new InternalServerErrorException(
-                'Error al eliminar la imagen.',
-            );
+        } catch (err: any) {
+            if (err.code !== 'ENOENT') {
+                throw new InternalServerErrorException('Error al eliminar la imagen.');
+            }
         }
     }
     async deleteImages(urls: string[]): Promise<void> {
