@@ -3,7 +3,7 @@ import { config } from 'dotenv';
 import { join } from 'path';
 
 // Cargar variables de entorno desde el archivo .env si existe
-config({ path: join(__dirname, '../../.env') });
+config({ path: join(process.cwd(), '.env') });
 
 export default new DataSource({
     type: 'postgres',
@@ -12,7 +12,14 @@ export default new DataSource({
     username: process.env.DB_USERNAME || 'postgres',
     password: process.env.DB_PASSWORD || 'admin',
     database: process.env.DB_DATABASE || 'auto-express-hub',
-    entities: [__dirname + '/../**/*.entity{.ts,.js}'],
-    migrations: [__dirname + '/migrations/*{.ts,.js}'],
+    entities: [
+        join(process.cwd(), 'src/**/*.entity{.ts,.js}'),
+        join(process.cwd(), 'dist/**/*.entity{.ts,.js}'),
+    ],
+    migrations: [
+        join(process.cwd(), 'src/database/migrations/*{.ts,.js}'),
+        join(process.cwd(), 'dist/database/migrations/*{.ts,.js}'),
+    ],
     synchronize: false,
 });
+

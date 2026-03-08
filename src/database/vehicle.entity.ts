@@ -6,6 +6,7 @@ import {
   CreateDateColumn,
   ManyToOne,
   JoinColumn,
+  Index,
 } from 'typeorm';
 import { Agency } from './agency.entity';
 import { ApiProperty } from '@nestjs/swagger';
@@ -32,6 +33,7 @@ export class Vehicle {
 
   @ApiProperty({ description: 'The brand of the vehicle.', example: 'Toyota' })
   @Column({ type: 'varchar' })
+  @Index()
   marca: string;
 
   @ApiProperty({
