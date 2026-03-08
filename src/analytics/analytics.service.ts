@@ -1,5 +1,5 @@
 
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, Between } from 'typeorm';
 import { VehicleAnalytics } from '../database/vehicle-analytics.entity';
@@ -7,6 +7,8 @@ import { Vehicle } from '../database/vehicle.entity';
 
 @Injectable()
 export class AnalyticsService {
+    private readonly logger = new Logger(AnalyticsService.name);
+
     constructor(
         @InjectRepository(VehicleAnalytics)
         private readonly analyticsRepository: Repository<VehicleAnalytics>,
@@ -33,12 +35,13 @@ export class AnalyticsService {
         await this.analyticsRepository.save(analytics);
 
         // Also update the total views counter on the Vehicle entity itself
-        await this.vehicleRepository
-            .createQueryBuilder()
-            .update(Vehicle)
-            .set({ vistas: () => '"vistas" + 1' })
-            .where('id = :id', { id: vehicleId })
-            .execute();
+        const result = await this.vehicleRepository.query(
+            'UPDATE "vehicles" SET "vistas" = "vistas" + 1 WHERE "id" = $1',
+            [vehicleId],
+        );
+        if (result[1] === 0) {
+            this.logger.warn(`No vehicle row updated for vistas increment, vehicleId=${vehicleId}`);
+        }
     }
 
     async registerWhatsAppClick(vehicleId: string): Promise<void> {
@@ -60,12 +63,13 @@ export class AnalyticsService {
         await this.analyticsRepository.save(analytics);
 
         // Also update the total clicks counter on the Vehicle entity itself
-        await this.vehicleRepository
-            .createQueryBuilder()
-            .update(Vehicle)
-            .set({ clicksWhatsapp: () => '"clicksWhatsapp" + 1' })
-            .where('id = :id', { id: vehicleId })
-            .execute();
+        const result = await this.vehicleRepository.query(
+            'UPDATE "vehicles" SET "clicksWhatsapp" = "clicksWhatsapp" + 1 WHERE "id" = $1',
+            [vehicleId],
+        );
+        if (result[1] === 0) {
+            this.logger.warn(`No vehicle row updated for clicksWhatsapp increment, vehicleId=${vehicleId}`);
+        }
     }
 
     async getAgencySummary(agencyId: string) {
