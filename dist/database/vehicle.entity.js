@@ -59,7 +59,6 @@ __decorate([
 __decorate([
     (0, swagger_1.ApiProperty)({ description: 'The brand of the vehicle.', example: 'Toyota' }),
     (0, typeorm_1.Column)({ type: 'varchar' }),
-    (0, typeorm_1.Index)(),
     __metadata("design:type", String)
 ], Vehicle.prototype, "marca", void 0);
 __decorate([
