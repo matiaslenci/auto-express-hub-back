@@ -3,7 +3,6 @@ import {
     BadRequestException,
     InternalServerErrorException,
 } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import sharp from 'sharp';
 import * as fs from 'fs';
 import * as path from 'path';
@@ -20,7 +19,7 @@ export type UploadFolder = 'vehicles' | 'agencies';
 export class UploadsService {
     private readonly uploadsPath: string;
 
-    constructor(private readonly configService: ConfigService) {
+    constructor() {
         this.uploadsPath = path.join(process.cwd(), 'uploads');
         this.ensureDirectoriesExist();
     }
@@ -38,7 +37,7 @@ export class UploadsService {
     async saveImage(
         file: Express.Multer.File,
         folder: UploadFolder,
-    ): Promise<{ url: string; filename: string }> {
+    ): Promise<{ filename: string }> {
         // Validar magic bytes del archivo para prevenir spoofing
         const validation = validateImageMagicBytes(file.buffer);
         if (!validation.isValid) {
@@ -71,11 +70,7 @@ export class UploadsService {
             );
         }
 
-        const baseUrl =
-            this.configService.get<string>('BASE_URL');
-        const url = `${baseUrl}/uploads/${folder}/${filename}`;
-
-        return { url, filename };
+        return { filename };
     }
 
     async deleteImage(folder: UploadFolder, filename: string): Promise<void> {
@@ -109,39 +104,16 @@ export class UploadsService {
             }
         }
     }
-    async deleteImages(urls: string[]): Promise<void> {
+    async deleteImages(filenames: string[], folder: UploadFolder): Promise<void> {
         // Parallel deletion — Promise.allSettled never rejects so a missing file
         // won't abort the remaining deletions or bubble up to the caller.
         const results = await Promise.allSettled(
-            urls.map((url) => this.deleteImageByUrl(url)),
+            filenames.map((filename) => this.deleteImage(folder, filename)),
         );
         results.forEach((result, i) => {
             if (result.status === 'rejected') {
-                console.warn(`[UploadsService] No se pudo eliminar la imagen ${urls[i]}:`, result.reason);
+                console.warn(`[UploadsService] No se pudo eliminar la imagen ${filenames[i]}:`, result.reason);
             }
         });
-    }
-
-    private async deleteImageByUrl(url: string): Promise<void> {
-        // URL format: <BASE_URL>/uploads/<folder>/<filename>
-        // We need to extract <folder> and <filename>
-        const uploadsSegment = '/uploads/';
-        const idx = url.indexOf(uploadsSegment);
-        if (idx === -1) {
-            console.warn(`[UploadsService] URL no reconocida, no se eliminará: ${url}`);
-            return;
-        }
-        const relative = url.slice(idx + uploadsSegment.length); // "vehicles/uuid.webp"
-        const parts = relative.split('/');
-        if (parts.length < 2) {
-            console.warn(`[UploadsService] Ruta de imagen inválida: ${url}`);
-            return;
-        }
-        const [folder, filename] = parts;
-        if (folder !== 'vehicles' && folder !== 'agencies') {
-            console.warn(`[UploadsService] Carpeta desconocida "${folder}" en URL: ${url}`);
-            return;
-        }
-        await this.deleteImage(folder as UploadFolder, filename);
     }
 }

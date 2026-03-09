@@ -156,11 +156,11 @@ __decorate([
 ], Vehicle.prototype, "localidad", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)({
-        description: 'An array of URLs for the vehicle’s photos.',
+        description: 'An array of filenames for the vehicle\'s photos.',
         type: [String],
         example: [
-            'https://example.com/photo1.jpg',
-            'https://example.com/photo2.jpg',
+            'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11.webp',
+            'b1ffcd00-0d1c-5fg9-cc7e-7cc0ce491b22.webp',
         ],
     }),
     (0, typeorm_1.Column)({ type: 'text', array: true }),

@@ -133,9 +133,9 @@ export class VehiclesService {
     // está consistente. El borrado es fire-and-forget con logging de errores.
     if (updateVehicleDto.fotos) {
       const newFotosSet = new Set(updateVehicleDto.fotos);
-      const removedFotos = vehicle.fotos.filter((url) => !newFotosSet.has(url));
+      const removedFotos = vehicle.fotos.filter((f) => !newFotosSet.has(f));
       if (removedFotos.length > 0) {
-        void this.uploadsService.deleteImages(removedFotos);
+        void this.uploadsService.deleteImages(removedFotos, 'vehicles');
       }
     }
 
@@ -151,7 +151,7 @@ export class VehiclesService {
 
     // Limpiar todas las fotos del vehículo del disco una vez eliminado de BD.
     if (vehicle.fotos?.length > 0) {
-      void this.uploadsService.deleteImages(vehicle.fotos);
+      void this.uploadsService.deleteImages(vehicle.fotos, 'vehicles');
     }
 
     return { message: 'Vehículo eliminado exitosamente' };

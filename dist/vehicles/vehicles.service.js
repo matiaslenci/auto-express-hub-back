@@ -106,9 +106,9 @@ let VehiclesService = class VehiclesService {
         const saved = await this.vehicleRepository.save(updatedVehicle);
         if (updateVehicleDto.fotos) {
             const newFotosSet = new Set(updateVehicleDto.fotos);
-            const removedFotos = vehicle.fotos.filter((url) => !newFotosSet.has(url));
+            const removedFotos = vehicle.fotos.filter((f) => !newFotosSet.has(f));
             if (removedFotos.length > 0) {
-                void this.uploadsService.deleteImages(removedFotos);
+                void this.uploadsService.deleteImages(removedFotos, 'vehicles');
             }
         }
         return saved;
@@ -120,7 +120,7 @@ let VehiclesService = class VehiclesService {
         }
         await this.vehicleRepository.delete(id);
         if (vehicle.fotos?.length > 0) {
-            void this.uploadsService.deleteImages(vehicle.fotos);
+            void this.uploadsService.deleteImages(vehicle.fotos, 'vehicles');
         }
         return { message: 'Vehículo eliminado exitosamente' };
     }

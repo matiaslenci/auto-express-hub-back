@@ -165,16 +165,16 @@ __decorate([
 ], UpdateVehicleDto.prototype, "localidad", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)({
-        description: 'An array of URLs for the vehicle’s photos.',
+        description: 'An array of filenames for the vehicle\'s photos.',
         type: [String],
         example: [
-            'https://example.com/photo1.jpg',
-            'https://example.com/photo2.jpg',
+            'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11.webp',
+            'b1ffcd00-0d1c-5fg9-cc7e-7cc0ce491b22.webp',
         ],
         required: false,
     }),
     (0, class_validator_1.IsArray)({ message: 'Las fotos deben ser un arreglo' }),
-    (0, class_validator_1.IsString)({ each: true, message: 'Cada foto debe ser una URL (cadena de texto)' }),
+    (0, class_validator_1.IsString)({ each: true, message: 'Cada foto debe ser un nombre de archivo (cadena de texto)' }),
     (0, class_validator_1.IsOptional)(),
     __metadata("design:type", Array)
 ], UpdateVehicleDto.prototype, "fotos", void 0);
