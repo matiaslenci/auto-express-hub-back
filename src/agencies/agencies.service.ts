@@ -40,17 +40,25 @@ export class AgenciesService {
     id: string,
     updateAgencyDto: UpdateAgencyDto,
   ): Promise<Omit<Agency, 'password'>> {
-    // Normalizar logo/portada: si el frontend envía URLs completas, extraer solo el filename
-    if (updateAgencyDto.logo) {
-      updateAgencyDto.logo = extractFilename(updateAgencyDto.logo);
+    // Eliminar propiedades vacías/null/undefined para no sobrescribir datos existentes
+    const cleanedDto: Partial<UpdateAgencyDto> = {};
+    for (const [key, value] of Object.entries(updateAgencyDto)) {
+      if (value !== undefined && value !== null && value !== '') {
+        cleanedDto[key] = value;
+      }
     }
-    if (updateAgencyDto.portada) {
-      updateAgencyDto.portada = extractFilename(updateAgencyDto.portada);
+
+    // Normalizar logo/portada: si el frontend envía URLs completas, extraer solo el filename
+    if (cleanedDto.logo) {
+      cleanedDto.logo = extractFilename(cleanedDto.logo);
+    }
+    if (cleanedDto.portada) {
+      cleanedDto.portada = extractFilename(cleanedDto.portada);
     }
 
     const agency = await this.agencyRepository.preload({
       id,
-      ...updateAgencyDto,
+      ...cleanedDto,
     });
 
     if (!agency) {

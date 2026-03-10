@@ -41,15 +41,21 @@ let AgenciesService = class AgenciesService {
         return result;
     }
     async updateProfile(id, updateAgencyDto) {
-        if (updateAgencyDto.logo) {
-            updateAgencyDto.logo = extractFilename(updateAgencyDto.logo);
+        const cleanedDto = {};
+        for (const [key, value] of Object.entries(updateAgencyDto)) {
+            if (value !== undefined && value !== null && value !== '') {
+                cleanedDto[key] = value;
+            }
         }
-        if (updateAgencyDto.portada) {
-            updateAgencyDto.portada = extractFilename(updateAgencyDto.portada);
+        if (cleanedDto.logo) {
+            cleanedDto.logo = extractFilename(cleanedDto.logo);
+        }
+        if (cleanedDto.portada) {
+            cleanedDto.portada = extractFilename(cleanedDto.portada);
         }
         const agency = await this.agencyRepository.preload({
             id,
-            ...updateAgencyDto,
+            ...cleanedDto,
         });
         if (!agency) {
             throw new common_1.NotFoundException(`Agencia con ID ${id} no encontrada`);
