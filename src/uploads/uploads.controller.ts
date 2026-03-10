@@ -22,6 +22,7 @@ import {
     ApiBody,
 } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { AdminGuard } from 'src/auth/admin.guard';
 import { UploadsService } from './uploads.service';
 import { multerConfig } from './file-upload.config';
 
@@ -172,5 +173,31 @@ export class UploadsController {
         }
         await this.uploadsService.deleteImage(folder as UploadFolder, filename);
         return { message: 'Image deleted successfully' };
+    }
+
+    @Post('cleanup')
+    @UseGuards(JwtAuthGuard, AdminGuard)
+    @ApiBearerAuth()
+    @HttpCode(HttpStatus.OK)
+    @ApiOperation({ summary: 'Eliminar archivos huérfanos no referenciados en la DB (solo admin)' })
+    @ApiResponse({
+        status: 200,
+        description: 'Limpieza completada',
+        schema: {
+            type: 'object',
+            properties: {
+                deleted: {
+                    type: 'array',
+                    items: { type: 'string' },
+                    example: ['vehicles/abc.webp', 'agencies/def.webp'],
+                },
+                count: { type: 'number', example: 2 },
+            },
+        },
+    })
+    @ApiResponse({ status: 401, description: 'No autenticado' })
+    @ApiResponse({ status: 403, description: 'No autorizado — se requiere rol admin' })
+    async cleanOrphanedFiles() {
+        return this.uploadsService.cleanOrphanedFiles();
     }
 }

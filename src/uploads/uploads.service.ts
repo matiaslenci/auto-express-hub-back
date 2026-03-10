@@ -7,6 +7,10 @@ import sharp from 'sharp';
 import * as fs from 'fs';
 import * as path from 'path';
 import { randomUUID } from 'crypto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Vehicle } from 'src/database/vehicle.entity';
+import { Agency } from 'src/database/agency.entity';
 import {
     validateImageMagicBytes,
     MAX_OUTPUT_DIMENSION,
@@ -19,7 +23,12 @@ export type UploadFolder = 'vehicles' | 'agencies';
 export class UploadsService {
     private readonly uploadsPath: string;
 
-    constructor() {
+    constructor(
+        @InjectRepository(Vehicle)
+        private readonly vehicleRepository: Repository<Vehicle>,
+        @InjectRepository(Agency)
+        private readonly agencyRepository: Repository<Agency>,
+    ) {
         this.uploadsPath = path.join(process.cwd(), 'uploads');
         this.ensureDirectoriesExist();
     }
@@ -115,5 +124,54 @@ export class UploadsService {
                 console.warn(`[UploadsService] No se pudo eliminar la imagen ${filenames[i]}:`, result.reason);
             }
         });
+    }
+
+    /**
+     * Compara los archivos en disco con los referenciados en la DB
+     * y elimina los que no están siendo usados por ningún vehículo ni agencia.
+     */
+    async cleanOrphanedFiles(): Promise<{ deleted: string[]; count: number }> {
+        // 1. Obtener todos los filenames referenciados en la DB
+        const referencedFiles = new Set<string>();
+
+        // Fotos de vehículos
+        const vehicles = await this.vehicleRepository.find({ select: ['fotos'] });
+        for (const vehicle of vehicles) {
+            if (vehicle.fotos) {
+                vehicle.fotos.forEach((f) => referencedFiles.add(f));
+            }
+        }
+
+        // Logo y portada de agencias
+        const agencies = await this.agencyRepository.find({ select: ['logo', 'portada'] });
+        for (const agency of agencies) {
+            if (agency.logo) referencedFiles.add(agency.logo);
+            if (agency.portada) referencedFiles.add(agency.portada);
+        }
+
+        // 2. Leer archivos en disco de cada carpeta
+        const deleted: string[] = [];
+        const folders: UploadFolder[] = ['vehicles', 'agencies'];
+
+        for (const folder of folders) {
+            const folderPath = path.join(this.uploadsPath, folder);
+            if (!fs.existsSync(folderPath)) continue;
+
+            const files = fs.readdirSync(folderPath);
+            for (const file of files) {
+                if (!referencedFiles.has(file)) {
+                    const filePath = path.join(folderPath, file);
+                    try {
+                        fs.unlinkSync(filePath);
+                        deleted.push(`${folder}/${file}`);
+                    } catch (err) {
+                        console.warn(`[UploadsService] No se pudo eliminar archivo huérfano ${folder}/${file}:`, err);
+                    }
+                }
+            }
+        }
+
+        console.log(`[UploadsService] Limpieza completada: ${deleted.length} archivos huérfanos eliminados.`);
+        return { deleted, count: deleted.length };
     }
 }

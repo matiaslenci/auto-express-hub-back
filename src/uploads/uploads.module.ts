@@ -1,8 +1,12 @@
 import { Module } from '@nestjs/common';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { Vehicle } from 'src/database/vehicle.entity';
+import { Agency } from 'src/database/agency.entity';
 import { UploadsController } from './uploads.controller';
 import { UploadsService } from './uploads.service';
 
 @Module({
+    imports: [TypeOrmModule.forFeature([Vehicle, Agency])],
     controllers: [UploadsController],
     providers: [UploadsService],
     exports: [UploadsService],
