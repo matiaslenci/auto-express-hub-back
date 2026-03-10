@@ -4,6 +4,20 @@ import { Repository } from 'typeorm';
 import { Agency } from 'src/database/agency.entity';
 import { UpdateAgencyDto } from './dto/update-agency.dto';
 
+/**
+ * Extrae solo el nombre de archivo de un valor que puede ser una URL completa
+ * o ya un filename. Ej: "https://domain.com/uploads/agencies/abc.webp" → "abc.webp"
+ */
+function extractFilename(value: string): string {
+  try {
+    const url = new URL(value);
+    const segments = url.pathname.split('/').filter(Boolean);
+    return segments.length > 0 ? segments[segments.length - 1] : value;
+  } catch {
+    return value;
+  }
+}
+
 @Injectable()
 export class AgenciesService {
   constructor(
@@ -26,6 +40,14 @@ export class AgenciesService {
     id: string,
     updateAgencyDto: UpdateAgencyDto,
   ): Promise<Omit<Agency, 'password'>> {
+    // Normalizar logo/portada: si el frontend envía URLs completas, extraer solo el filename
+    if (updateAgencyDto.logo) {
+      updateAgencyDto.logo = extractFilename(updateAgencyDto.logo);
+    }
+    if (updateAgencyDto.portada) {
+      updateAgencyDto.portada = extractFilename(updateAgencyDto.portada);
+    }
+
     const agency = await this.agencyRepository.preload({
       id,
       ...updateAgencyDto,

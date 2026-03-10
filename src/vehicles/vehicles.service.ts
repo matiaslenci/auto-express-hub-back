@@ -17,6 +17,22 @@ import { UploadsService } from 'src/uploads/uploads.service';
 
 export const MAX_VEHICLE_PHOTOS = 20;
 
+/**
+ * Extrae solo el nombre de archivo de un valor que puede ser una URL completa
+ * o ya un filename. Ej: "https://domain.com/uploads/vehicles/abc.webp" → "abc.webp"
+ */
+function extractFilename(value: string): string {
+  try {
+    const url = new URL(value);
+    // Es una URL válida, extraer el último segmento del pathname
+    const segments = url.pathname.split('/').filter(Boolean);
+    return segments.length > 0 ? segments[segments.length - 1] : value;
+  } catch {
+    // No es una URL, devolver tal cual (ya es un filename)
+    return value;
+  }
+}
+
 @Injectable()
 export class VehiclesService {
   constructor(
@@ -42,6 +58,11 @@ export class VehiclesService {
       throw new ForbiddenException(
         `Has alcanzado el límite de ${planLimit} publicaciones de tu plan ${user.plan}. Actualiza tu plan para publicar más vehículos.`
       );
+    }
+
+    // Normalizar fotos: si el frontend envía URLs completas, extraer solo el filename
+    if (createVehicleDto.fotos) {
+      createVehicleDto.fotos = createVehicleDto.fotos.map(extractFilename);
     }
 
     // Validar límite de fotos al crear
@@ -110,6 +131,11 @@ export class VehiclesService {
     const vehicle = await this.getVehicleById(id);
     if (vehicle.agencyId !== user.id) {
       throw new UnauthorizedException('Solo puedes editar tus propios vehículos');
+    }
+
+    // Normalizar fotos: si el frontend envía URLs completas, extraer solo el filename
+    if (updateVehicleDto.fotos) {
+      updateVehicleDto.fotos = updateVehicleDto.fotos.map(extractFilename);
     }
 
     // Validar límite de fotos al actualizar

@@ -54,21 +54,21 @@ __decorate([
 ], UpdateAgencyDto.prototype, "nombre", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)({
-        description: "The new URL of the agency's logo.",
-        example: 'https://example.com/newlogo.png',
+        description: "Nombre de archivo del logo de la agencia.",
+        example: 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11.webp',
         required: false,
     }),
-    (0, class_validator_1.IsString)({ message: 'El logo debe ser una URL (cadena de texto)' }),
+    (0, class_validator_1.IsString)({ message: 'El logo debe ser un nombre de archivo (cadena de texto)' }),
     (0, class_validator_1.IsOptional)(),
     __metadata("design:type", String)
 ], UpdateAgencyDto.prototype, "logo", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)({
-        description: "The new URL of the agency's cover image.",
-        example: 'https://example.com/newcover.png',
+        description: "Nombre de archivo de la portada de la agencia.",
+        example: 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11.webp',
         required: false,
     }),
-    (0, class_validator_1.IsString)({ message: 'La portada debe ser una URL (cadena de texto)' }),
+    (0, class_validator_1.IsString)({ message: 'La portada debe ser un nombre de archivo (cadena de texto)' }),
     (0, class_validator_1.IsOptional)(),
     __metadata("design:type", String)
 ], UpdateAgencyDto.prototype, "portada", void 0);

@@ -21,6 +21,16 @@ const agency_entity_1 = require("../database/agency.entity");
 const analytics_service_1 = require("../analytics/analytics.service");
 const uploads_service_1 = require("../uploads/uploads.service");
 exports.MAX_VEHICLE_PHOTOS = 20;
+function extractFilename(value) {
+    try {
+        const url = new URL(value);
+        const segments = url.pathname.split('/').filter(Boolean);
+        return segments.length > 0 ? segments[segments.length - 1] : value;
+    }
+    catch {
+        return value;
+    }
+}
 let VehiclesService = class VehiclesService {
     vehicleRepository;
     analyticsService;
@@ -37,6 +47,9 @@ let VehiclesService = class VehiclesService {
         const planLimit = agency_entity_1.PLAN_LIMITS[user.plan];
         if (planLimit !== -1 && currentVehicleCount >= planLimit) {
             throw new common_1.ForbiddenException(`Has alcanzado el límite de ${planLimit} publicaciones de tu plan ${user.plan}. Actualiza tu plan para publicar más vehículos.`);
+        }
+        if (createVehicleDto.fotos) {
+            createVehicleDto.fotos = createVehicleDto.fotos.map(extractFilename);
         }
         if (createVehicleDto.fotos && createVehicleDto.fotos.length > exports.MAX_VEHICLE_PHOTOS) {
             throw new common_1.BadRequestException(`Un vehículo no puede tener más de ${exports.MAX_VEHICLE_PHOTOS} fotos.`);
@@ -92,6 +105,9 @@ let VehiclesService = class VehiclesService {
         const vehicle = await this.getVehicleById(id);
         if (vehicle.agencyId !== user.id) {
             throw new common_1.UnauthorizedException('Solo puedes editar tus propios vehículos');
+        }
+        if (updateVehicleDto.fotos) {
+            updateVehicleDto.fotos = updateVehicleDto.fotos.map(extractFilename);
         }
         if (updateVehicleDto.fotos && updateVehicleDto.fotos.length > exports.MAX_VEHICLE_PHOTOS) {
             throw new common_1.BadRequestException(`Un vehículo no puede tener más de ${exports.MAX_VEHICLE_PHOTOS} fotos.`);

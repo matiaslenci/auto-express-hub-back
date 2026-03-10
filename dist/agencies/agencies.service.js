@@ -17,6 +17,16 @@ const common_1 = require("@nestjs/common");
 const typeorm_1 = require("@nestjs/typeorm");
 const typeorm_2 = require("typeorm");
 const agency_entity_1 = require("../database/agency.entity");
+function extractFilename(value) {
+    try {
+        const url = new URL(value);
+        const segments = url.pathname.split('/').filter(Boolean);
+        return segments.length > 0 ? segments[segments.length - 1] : value;
+    }
+    catch {
+        return value;
+    }
+}
 let AgenciesService = class AgenciesService {
     agencyRepository;
     constructor(agencyRepository) {
@@ -31,6 +41,12 @@ let AgenciesService = class AgenciesService {
         return result;
     }
     async updateProfile(id, updateAgencyDto) {
+        if (updateAgencyDto.logo) {
+            updateAgencyDto.logo = extractFilename(updateAgencyDto.logo);
+        }
+        if (updateAgencyDto.portada) {
+            updateAgencyDto.portada = extractFilename(updateAgencyDto.portada);
+        }
         const agency = await this.agencyRepository.preload({
             id,
             ...updateAgencyDto,
