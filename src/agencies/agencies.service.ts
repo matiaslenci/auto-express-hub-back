@@ -40,11 +40,18 @@ export class AgenciesService {
     id: string,
     updateAgencyDto: UpdateAgencyDto,
   ): Promise<Omit<Agency, 'password'>> {
-    // Eliminar propiedades vacías/null/undefined para no sobrescribir datos existentes
-    const cleanedDto: Partial<UpdateAgencyDto> = {};
+    // Eliminar propiedades vacías/null/undefined, pero permitir vaciar campos opcionales
+    const cleanedDto: Record<string, any> = {};
     for (const [key, value] of Object.entries(updateAgencyDto)) {
-      if (value !== undefined && value !== null && value !== '') {
-        cleanedDto[key] = value;
+      if (value !== undefined) {
+        if (value === '' || value === null) {
+          // Permitir borrar imágenes y datos opcionales
+          if (['logo', 'portada', 'ubicacion', 'whatsapp'].includes(key)) {
+            cleanedDto[key] = null;
+          }
+        } else {
+          cleanedDto[key] = value;
+        }
       }
     }
 
