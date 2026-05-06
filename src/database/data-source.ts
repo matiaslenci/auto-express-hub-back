@@ -13,13 +13,10 @@ export default new DataSource({
     password: process.env.DB_PASSWORD || 'admin',
     database: process.env.DB_DATABASE || 'auto-express-hub',
     entities: [
-        join(process.cwd(), 'src/**/*.entity{.ts,.js}'),
-        join(process.cwd(), 'dist/**/*.entity{.ts,.js}'),
+        join(__dirname, '..', '**', '*.entity{.ts,.js}'),
     ],
     migrations: [
-        join(process.cwd(), 'src/database/migrations/*{.ts,.js}'),
-        join(process.cwd(), 'dist/database/migrations/*{.ts,.js}'),
+        join(__dirname, 'migrations', '*{.ts,.js}'),
     ],
     synchronize: false,
 });
-

@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { join } from 'path';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ThrottlerModule } from '@nestjs/throttler';
@@ -27,13 +28,13 @@ import { AdminModule } from './admin/admin.module';
       useFactory: (configService: ConfigService) => ({
         type: 'postgres',
         host: configService.get<string>('DB_HOST'),
-       // host: 'catalogo-vehiculos-postgres-7k5yxt',
         port: configService.get<number>('DB_PORT'),
         username: configService.get<string>('DB_USERNAME'),
         password: configService.get<string>('DB_PASSWORD'),
         database: configService.get<string>('DB_DATABASE'),
         entities: [Agency, Vehicle, VehicleAnalytics],
-        // synchronize: configService.get('NODE_ENV') !== 'production', // Solo sincronizar en desarrollo
+        migrations: [join(__dirname, 'database', 'migrations', '*{.ts,.js}')],
+        migrationsRun: true, // Ejecutar migraciones automáticamente al iniciar
         synchronize: false,
       }),
       inject: [ConfigService],
