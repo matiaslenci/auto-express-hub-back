@@ -26,8 +26,8 @@ import { AdminModule } from './admin/admin.module';
       imports: [ConfigModule],
       useFactory: (configService: ConfigService) => ({
         type: 'postgres',
-       // host: configService.get<string>('DB_HOST'),
-        host: 'catalogo-vehiculos-postgres-7k5yxt',
+        host: configService.get<string>('DB_HOST'),
+       // host: 'catalogo-vehiculos-postgres-7k5yxt',
         port: configService.get<number>('DB_PORT'),
         username: configService.get<string>('DB_USERNAME'),
         password: configService.get<string>('DB_PASSWORD'),
