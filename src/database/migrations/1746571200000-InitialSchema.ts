@@ -18,7 +18,7 @@ export class InitialSchema1746571200000 implements MigrationInterface {
         // Crear tabla agencies
         await queryRunner.query(`
             CREATE TABLE "agencies" (
-                "id" uuid NOT NULL DEFAULT uuid_generate_in_ossp(),
+                "id" uuid NOT NULL DEFAULT uuid_generate_v4(),
                 "username" character varying NOT NULL,
                 "email" character varying NOT NULL,
                 "password" character varying NOT NULL,
